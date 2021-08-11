@@ -76,6 +76,20 @@ static NSString *gitFile = @".git";
     config.path = [NSString stringWithString:path];
     config.version = [object[@"_"] integerValue];
     
+    if ([object[@"env"] isKindOfClass:[NSDictionary class]]) {
+        NSMutableDictionary *env = [NSMutableDictionary dictionaryWithDictionary:object[@"env"]];
+        
+        for (NSString *key in [env allKeys]) {
+            if (![env[key] isKindOfClass:[NSString class]]) {
+                [env removeObjectForKey:key];
+            }
+        }
+        
+        config.env = [NSDictionary dictionaryWithDictionary:env];
+    } else {
+        config.env = [NSDictionary dictionary];
+    }
+    
     return config;
 }
 

@@ -12,8 +12,11 @@ int main(int argc, const char * argv[]) {
     @autoreleasepool {
         ALOConfig *alo = [ALOConfig find];
         
-        NSLog(@"ALO Path: %@\n", alo.path);
-        NSLog(@"ALO Version: %li\n", alo.version);
+        if (alo) {
+            NSLog(@"ALO Path: %@\n", alo.path);
+            NSLog(@"ALO Version: %li\n", alo.version);
+            NSLog(@"ALO Env: %@\n", alo.env);
+        }
     }
     
     return 0;

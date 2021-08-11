@@ -12,9 +12,9 @@
 
 @property (nonatomic) NSString *path;
 @property (nonatomic) NSInteger version;
+@property (nonatomic) NSDictionary *env;
 
 + (ALOConfig *)find;
-+ (ALOConfig *)parse:(NSString *)json atPath:(NSString *)path;
 
 @end
 
