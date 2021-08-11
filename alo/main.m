@@ -6,11 +6,14 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "Config/Config.h"
 
 int main(int argc, const char * argv[]) {
     @autoreleasepool {
-        // insert code here...
-        NSLog(@"Hello, World!");
+        NSString *aloPath = [ALOConfig find];
+        
+        NSLog(@"ALO File: %@\n", [ALOConfig fileName]);
+        NSLog(@"ALO Path: %@\n", aloPath);
     }
     
     return 0;
