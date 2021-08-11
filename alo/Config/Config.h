@@ -10,10 +10,9 @@
 
 @interface ALOConfig : NSObject
 
-@property (class, nonatomic, readonly) NSString *fileName;
 @property (nonatomic) NSString *path;
 
-+ (NSString *) find;
++ (NSString *)find;
 
 @end
 

@@ -12,7 +12,6 @@ int main(int argc, const char * argv[]) {
     @autoreleasepool {
         NSString *aloPath = [ALOConfig find];
         
-        NSLog(@"ALO File: %@\n", [ALOConfig fileName]);
         NSLog(@"ALO Path: %@\n", aloPath);
     }
     
