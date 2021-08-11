@@ -13,7 +13,7 @@
 static NSString *fileName = @"alo.json";
 static NSString *gitFile = @".git";
 
-+ (NSString *)find {
++ (ALOConfig *)find {
     NSFileManager *manager = [NSFileManager defaultManager];
     NSString *path = [manager currentDirectoryPath];
     NSString *lastPath = @"";
@@ -53,7 +53,30 @@ static NSString *gitFile = @".git";
         path = [path stringByDeletingLastPathComponent];
     }
     
-    return file;
+    return file ? [self parse:file atPath:lastPath] : nil;
+}
+
++ (ALOConfig *)parse:(NSString *)json atPath:(NSString *)path {
+    NSError *error = nil;
+    id data = [NSJSONSerialization JSONObjectWithData:[json dataUsingEncoding:NSUTF8StringEncoding] options:NSJSONReadingMutableContainers error:&error];
+    
+    if (error) {
+        // do something
+        return nil;
+    }
+    
+    if (![data isKindOfClass:[NSDictionary class]]) {
+        // do something
+        return nil;
+    }
+    
+    NSDictionary *object = data;
+    ALOConfig *config = [[ALOConfig alloc] init];
+    
+    config.path = [NSString stringWithString:path];
+    config.version = [object[@"_"] integerValue];
+    
+    return config;
 }
 
 @end

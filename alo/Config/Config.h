@@ -11,9 +11,11 @@
 @interface ALOConfig : NSObject
 
 @property (nonatomic) NSString *path;
+@property (nonatomic) NSInteger version;
 
-+ (NSString *)find;
++ (ALOConfig *)find;
++ (ALOConfig *)parse:(NSString *)json atPath:(NSString *)path;
 
 @end
 
-#endif /* CONFIG_H */
+#endif

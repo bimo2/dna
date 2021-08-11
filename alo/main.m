@@ -10,9 +10,10 @@
 
 int main(int argc, const char * argv[]) {
     @autoreleasepool {
-        NSString *aloPath = [ALOConfig find];
+        ALOConfig *alo = [ALOConfig find];
         
-        NSLog(@"ALO Path: %@\n", aloPath);
+        NSLog(@"ALO Path: %@\n", alo.path);
+        NSLog(@"ALO Version: %li\n", alo.version);
     }
     
     return 0;
