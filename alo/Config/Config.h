@@ -15,7 +15,7 @@
 @property (nonatomic) NSDictionary *dependencies;
 @property (nonatomic) NSDictionary *env;
 
-+ (ALOConfig *)find;
++ (ALOConfig *)find:(NSError **)error;
 
 @end
 

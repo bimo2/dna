@@ -10,7 +10,8 @@
 
 int main(int argc, const char * argv[]) {
     @autoreleasepool {
-        ALOConfig *alo = [ALOConfig find];
+        NSError *error;
+        ALOConfig *alo = [ALOConfig find:&error];
         
         if (alo) {
             NSLog(@"ALO Path: %@\n", [alo path]);

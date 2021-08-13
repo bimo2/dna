@@ -13,20 +13,21 @@
 static NSString *fileName = @"alo.json";
 static NSString *gitFile = @".git";
 
-+ (ALOConfig *)find {
++ (ALOConfig *)find:(NSError **)error {
     NSFileManager *manager = [NSFileManager defaultManager];
     NSString *path = [manager currentDirectoryPath];
     NSString *lastPath = @"";
     NSString *file = nil;
-    NSError *error = nil;
     BOOL isGitPath = NO;
+    
+    *error = nil;
     
     while (!file && !isGitPath && ![path isEqualToString:lastPath]) {
         lastPath = path;
         
-        NSArray *directory = [manager contentsOfDirectoryAtPath:path error:&error];
+        NSArray *directory = [manager contentsOfDirectoryAtPath:path error:error];
         
-        if (error) {
+        if (*error) {
             // do something
             return nil;
         }
@@ -35,9 +36,9 @@ static NSString *gitFile = @".git";
             if ([item isEqualToString:fileName]) {
                 NSString *absolutePath = [path stringByAppendingPathComponent:item];
                 
-                file = [NSString stringWithContentsOfFile:absolutePath encoding:NSUTF8StringEncoding error:&error];
+                file = [NSString stringWithContentsOfFile:absolutePath encoding:NSUTF8StringEncoding error:error];
                 
-                if (error) {
+                if (*error) {
                     // do something
                     return nil;
                 }
@@ -53,14 +54,13 @@ static NSString *gitFile = @".git";
         path = [path stringByDeletingLastPathComponent];
     }
     
-    return file ? [self parse:file atPath:lastPath] : nil;
+    return file ? [self parse:file atPath:lastPath error:error] : nil;
 }
 
-+ (ALOConfig *)parse:(NSString *)json atPath:(NSString *)path {
-    NSError *error = nil;
-    id data = [NSJSONSerialization JSONObjectWithData:[json dataUsingEncoding:NSUTF8StringEncoding] options:NSJSONReadingMutableContainers error:&error];
++ (ALOConfig *)parse:(NSString *)json atPath:(NSString *)path error:(NSError **)error {
+    id data = [NSJSONSerialization JSONObjectWithData:[json dataUsingEncoding:NSUTF8StringEncoding] options:NSJSONReadingMutableContainers error:error];
     
-    if (error) {
+    if (*error) {
         // do something
         return nil;
     }
@@ -75,58 +75,88 @@ static NSString *gitFile = @".git";
     
     config.path = [NSString stringWithString:path];
     config.version = [object[@"_alo"] integerValue];
-    config.dependencies = [self parseDependenciesFromObject:object[@"dependencies"]];
+    config.dependencies = [self parseDependenciesFromData:object[@"dependencies"] error:error];
     
-    if ([object[@"env"] isKindOfClass:[NSDictionary class]]) {
-        NSMutableDictionary *env = object[@"env"];
-        
-        for (NSString *key in [env allKeys]) {
-            if (![env[key] isKindOfClass:[NSString class]]) {
-                [env removeObjectForKey:key];
-            }
-        }
-        
-        config.env = [NSDictionary dictionaryWithDictionary:env];
-    } else {
-        config.env = [NSDictionary dictionary];
+    if (*error) {
+        // do something
+        return nil;
+    }
+    
+    config.env = [self parseEnvFromData:object[@"env"] error:error];
+    
+    if (*error) {
+        // do something
+        return nil;
     }
     
     return config;
 }
 
-+ (NSDictionary *)parseDependenciesFromObject:(id)data {
-    if (![data isKindOfClass:[NSDictionary class]]) {
++ (NSDictionary *)parseDependenciesFromData:(id)data error:(NSError **)error {
+    if (!data) {
         return [NSDictionary dictionary];
+    }
+    
+    if (![data isKindOfClass:[NSDictionary class]]) {
+        // do something
+        return nil;
     }
     
     NSMutableDictionary *dependencies = [NSMutableDictionary dictionaryWithDictionary:data];
     
     for (NSString *key in [dependencies allKeys]) {
         if ([dependencies[key] isKindOfClass:[NSString class]]) {
-            [dependencies setValue:@[dependencies[key]] forKey:key];
-        } else if ([dependencies[key] isKindOfClass:[NSMutableArray class]]) {
+            NSArray *array = @[[NSString stringWithString:dependencies[key]]];
+            
+            [dependencies setObject:array forKey:key];
+            
+            continue;
+        }
+        
+        if ([dependencies[key] isKindOfClass:[NSMutableArray class]]) {
             NSMutableArray *array = dependencies[key];
-            BOOL isValid = true;
+            
+            if ([array count] == 0 || [array count] > 2) {
+                // do something
+                return nil;
+            }
             
             for (NSObject *item in array) {
                 if (![item isKindOfClass:[NSString class]]) {
-                    isValid = false;
-                    
-                    break;
+                    // do something
+                    return nil;
                 }
             }
             
-            if (isValid && [array count] > 0) {
-                [dependencies setValue:[NSArray arrayWithArray:array] forKey:key];
-            } else {
-                [dependencies removeObjectForKey:key];
-            }
-        } else {
-            [dependencies removeObjectForKey:key];
+            continue;
         }
+        
+        return nil;
     }
     
     return [NSDictionary dictionaryWithDictionary:dependencies];
+}
+
++ (NSDictionary *)parseEnvFromData:(id)data error:(NSError **)error {
+    if (!data) {
+        return [NSDictionary dictionary];
+    }
+    
+    if (![data isKindOfClass:[NSDictionary class]]) {
+        // do something
+        return nil;
+    }
+    
+    NSDictionary *env = data;
+    
+    for (NSString *key in [env allKeys]) {
+        if (![env[key] isKindOfClass:[NSString class]]) {
+            // do something
+            return nil;
+        }
+    }
+    
+    return env;
 }
 
 @end
