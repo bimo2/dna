@@ -14,6 +14,7 @@ int main(int argc, const char * argv[]) {
         ALOConfig *alo = [ALOConfig find:&error];
         
         if (error) {
+            NSLog(@"%@", error.localizedDescription);
             return 1;
         }
         

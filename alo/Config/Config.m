@@ -6,9 +6,11 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "../Errors/Errors.h"
 #import "Config.h"
 
-@implementation ALOScript @end
+@implementation ALOScript
+@end
 
 @implementation ALOConfig
 
@@ -20,6 +22,7 @@ static NSString *gitFile = @".git";
     NSString *path = [manager currentDirectoryPath];
     NSString *lastPath = @"";
     NSString *file = nil;
+    NSError *fsError = nil;
     BOOL isGitPath = NO;
     
     *error = nil;
@@ -27,10 +30,15 @@ static NSString *gitFile = @".git";
     while (!file && !isGitPath && ![path isEqualToString:lastPath]) {
         lastPath = path;
         
-        NSArray *directory = [manager contentsOfDirectoryAtPath:path error:error];
+        NSArray *directory = [manager contentsOfDirectoryAtPath:path error:&fsError];
         
-        if (*error) {
-            // do something
+        if (fsError) {
+            NSDictionary *info = @{
+                NSLocalizedDescriptionKey: [NSString stringWithFormat:@"Could not read directory: %@", path],
+            };
+            
+            *error = [NSError errorWithDomain:ALOErrorDomain code:ALOReadError userInfo:info];
+            
             return nil;
         }
         
@@ -38,10 +46,15 @@ static NSString *gitFile = @".git";
             if ([item isEqualToString:fileName]) {
                 NSString *absolutePath = [path stringByAppendingPathComponent:item];
                 
-                file = [NSString stringWithContentsOfFile:absolutePath encoding:NSUTF8StringEncoding error:error];
+                file = [NSString stringWithContentsOfFile:absolutePath encoding:NSUTF8StringEncoding error:&fsError];
                 
-                if (*error) {
-                    // do something
+                if (fsError) {
+                    NSDictionary *info = @{
+                        NSLocalizedDescriptionKey: [NSString stringWithFormat:@"Could not read file: %@", [path stringByAppendingPathComponent:item]],
+                    };
+                    
+                    *error = [NSError errorWithDomain:ALOErrorDomain code:ALOReadError userInfo:info];
+                    
                     return nil;
                 }
                 
@@ -58,15 +71,16 @@ static NSString *gitFile = @".git";
 }
 
 + (ALOConfig *)parse:(NSString *)json atPath:(NSString *)path error:(NSError **)error {
-    id data = [NSJSONSerialization JSONObjectWithData:[json dataUsingEncoding:NSUTF8StringEncoding] options:NSJSONReadingMutableContainers error:error];
+    NSError *jsonError = nil;
+    id data = [NSJSONSerialization JSONObjectWithData:[json dataUsingEncoding:NSUTF8StringEncoding] options:NSJSONReadingMutableContainers error:&jsonError];
     
-    if (*error) {
-        // do something
-        return nil;
-    }
-    
-    if (![data isKindOfClass:[NSDictionary class]]) {
-        // do something
+    if (jsonError || ![data isKindOfClass:[NSDictionary class]]) {
+        NSDictionary *info = @{
+            NSLocalizedDescriptionKey: @"Invalid JSON {} syntax",
+        };
+        
+        *error = [NSError errorWithDomain:ALOErrorDomain code:ALOParseError userInfo:info];
+        
         return nil;
     }
     
@@ -77,24 +91,15 @@ static NSString *gitFile = @".git";
     config.version = [object[@"_alo"] integerValue];
     config.dependencies = [self parseDependenciesFromData:object[@"dependencies"] error:error];
     
-    if (*error) {
-        // do something
-        return nil;
-    }
+    if (*error) return nil;
     
     config.env = [self parseEnvFromData:object[@"env"] error:error];
     
-    if (*error) {
-        // do something
-        return nil;
-    }
+    if (*error) return nil;
     
     config.scripts = [self parseScriptsFromData:object[@"scripts"] error:error];
     
-    if (*error) {
-        // do something
-        return nil;
-    }
+    if (*error) return nil;
     
     return config;
 }
@@ -103,7 +108,12 @@ static NSString *gitFile = @".git";
     if (!data) return [NSDictionary dictionary];
     
     if (![data isKindOfClass:[NSDictionary class]]) {
-        // do something
+        NSDictionary *info = @{
+            NSLocalizedDescriptionKey: @"Invalid `dependencies` object",
+        };
+        
+        *error = [NSError errorWithDomain:ALOErrorDomain code:ALOParseError userInfo:info];
+        
         return nil;
     }
     
@@ -122,13 +132,23 @@ static NSString *gitFile = @".git";
             NSMutableArray *array = dependencies[key];
             
             if ([array count] == 0 || [array count] > 2) {
-                // do something
+                NSDictionary *info = @{
+                    NSLocalizedDescriptionKey: [NSString stringWithFormat:@"Invalid `dependencies` object: %@", key],
+                };
+                
+                *error = [NSError errorWithDomain:ALOErrorDomain code:ALOParseError userInfo:info];
+                
                 return nil;
             }
             
             for (NSObject *item in array) {
                 if (![item isKindOfClass:[NSString class]]) {
-                    // do something
+                    NSDictionary *info = @{
+                        NSLocalizedDescriptionKey: [NSString stringWithFormat:@"Invalid `dependencies` object: %@", key],
+                    };
+                    
+                    *error = [NSError errorWithDomain:ALOErrorDomain code:ALOParseError userInfo:info];
+                    
                     return nil;
                 }
             }
@@ -136,7 +156,12 @@ static NSString *gitFile = @".git";
             continue;
         }
         
-        // do something
+        NSDictionary *info = @{
+            NSLocalizedDescriptionKey: [NSString stringWithFormat:@"Invalid `dependencies` object: %@", key],
+        };
+        
+        *error = [NSError errorWithDomain:ALOErrorDomain code:ALOParseError userInfo:info];
+        
         return nil;
     }
     
@@ -147,7 +172,12 @@ static NSString *gitFile = @".git";
     if (!data) return [NSDictionary dictionary];
     
     if (![data isKindOfClass:[NSDictionary class]]) {
-        // do something
+        NSDictionary *info = @{
+            NSLocalizedDescriptionKey: @"Invalid `env` object",
+        };
+        
+        *error = [NSError errorWithDomain:ALOErrorDomain code:ALOParseError userInfo:info];
+        
         return nil;
     }
     
@@ -155,7 +185,12 @@ static NSString *gitFile = @".git";
     
     for (NSString *key in [env allKeys]) {
         if (![env[key] isKindOfClass:[NSString class]]) {
-            // do something
+            NSDictionary *info = @{
+                NSLocalizedDescriptionKey: [NSString stringWithFormat:@"Invalid `env` object: %@", key],
+            };
+            
+            *error = [NSError errorWithDomain:ALOErrorDomain code:ALOParseError userInfo:info];
+            
             return nil;
         }
     }
@@ -167,7 +202,12 @@ static NSString *gitFile = @".git";
     if (!data) return [NSDictionary dictionary];
     
     if (![data isKindOfClass:[NSMutableDictionary class]]) {
-        // do something
+        NSDictionary *info = @{
+            NSLocalizedDescriptionKey: @"Invalid `scripts` object",
+        };
+        
+        *error = [NSError errorWithDomain:ALOErrorDomain code:ALOParseError userInfo:info];
+        
         return nil;
     }
     
@@ -175,19 +215,29 @@ static NSString *gitFile = @".git";
     
     for (NSString *key in [scripts allKeys]) {
         if (![scripts[key] isKindOfClass:[NSDictionary class]]) {
-            // do something
+            NSDictionary *info = @{
+                NSLocalizedDescriptionKey: [NSString stringWithFormat:@"Invalid `scripts` object: %@", key],
+            };
+            
+            *error = [NSError errorWithDomain:ALOErrorDomain code:ALOParseError userInfo:info];
+            
             return nil;
         }
         
-        if (![scripts[key][@"?"] isKindOfClass:[NSString class]]) {
-            // do something
+        if (scripts[key][@"?"] && ![scripts[key][@"?"] isKindOfClass:[NSString class]]) {
+            NSDictionary *info = @{
+                NSLocalizedDescriptionKey: [NSString stringWithFormat:@"Invalid `scripts` object: %@", key],
+            };
+            
+            *error = [NSError errorWithDomain:ALOErrorDomain code:ALOParseError userInfo:info];
+            
             return nil;
         }
         
         if ([scripts[key][@"run"] isKindOfClass:[NSString class]]) {
             ALOScript *script = [[ALOScript alloc] init];
             
-            script.info = [NSString stringWithString:scripts[key][@"?"]];
+            script.info = [NSString stringWithString:scripts[key][@"?"] ?: @""];
             script.run = @[[NSString stringWithString:scripts[key][@"run"]]];
             [scripts setObject:script forKey:key];
             
@@ -197,23 +247,33 @@ static NSString *gitFile = @".git";
         if ([scripts[key][@"run"] isKindOfClass:[NSMutableArray class]]) {
             NSMutableArray *commands = scripts[key][@"run"];
             
-            for (NSObject *command in commands) {
-                if (![command isKindOfClass:[NSString class]]) {
-                    // do something
+            for (NSObject *item in commands) {
+                if (![item isKindOfClass:[NSString class]]) {
+                    NSDictionary *info = @{
+                        NSLocalizedDescriptionKey: [NSString stringWithFormat:@"Invalid `scripts` object: %@", key],
+                    };
+                    
+                    *error = [NSError errorWithDomain:ALOErrorDomain code:ALOParseError userInfo:info];
+                    
                     return nil;
                 }
             }
             
             ALOScript *script = [[ALOScript alloc] init];
             
-            script.info = [NSString stringWithString:scripts[key][@"?"]];
+            script.info = [NSString stringWithString:scripts[key][@"?"] ?: @""];
             script.run = [NSArray arrayWithArray:commands];
             [scripts setObject:script forKey:key];
             
             continue;
         }
         
-        // do something
+        NSDictionary *info = @{
+            NSLocalizedDescriptionKey: [NSString stringWithFormat:@"Invalid `scripts` object: %@", key],
+        };
+        
+        *error = [NSError errorWithDomain:ALOErrorDomain code:ALOParseError userInfo:info];
+        
         return nil;
     }
     
