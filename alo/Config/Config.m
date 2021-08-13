@@ -103,6 +103,10 @@ static NSString *gitFile = @".git";
     
     NSMutableDictionary *dependencies = [NSMutableDictionary dictionaryWithDictionary:data];
     
+    NSError *(^keyedError)(NSString *) = ^NSError *(NSString *key) {
+        return [NSError error:ALOParseError because:@"Invalid `dependencies` object: %@", key];
+    };
+    
     for (NSString *key in [dependencies allKeys]) {
         if ([dependencies[key] isKindOfClass:[NSString class]]) {
             NSArray *array = @[[NSString stringWithString:dependencies[key]]];
@@ -116,14 +120,14 @@ static NSString *gitFile = @".git";
             NSMutableArray *array = dependencies[key];
             
             if ([array count] == 0 || [array count] > 2) {
-                *error = [NSError error:ALOParseError because:@"Invalid `dependencies` object: %@", key];
+                *error = keyedError(key);
                 
                 return nil;
             }
             
             for (NSObject *item in array) {
                 if (![item isKindOfClass:[NSString class]]) {
-                    *error = [NSError error:ALOParseError because:@"Invalid `dependencies` object: %@", key];
+                    *error = keyedError(key);
                     
                     return nil;
                 }
@@ -132,7 +136,7 @@ static NSString *gitFile = @".git";
             continue;
         }
         
-        *error = [NSError error:ALOParseError because:@"Invalid `dependencies` object: %@", key];
+        *error = keyedError(key);
         
         return nil;
     }
@@ -173,15 +177,19 @@ static NSString *gitFile = @".git";
     
     NSMutableDictionary *scripts = data;
     
+    NSError *(^keyedError)(NSString *) = ^NSError *(NSString *key) {
+        return [NSError error:ALOParseError because:@"Invalid `scripts` object: %@", key];
+    };
+    
     for (NSString *key in [scripts allKeys]) {
         if (![scripts[key] isKindOfClass:[NSDictionary class]]) {
-            *error = [NSError error:ALOParseError because:@"Invalid `scripts` object: %@", key];
+            *error = keyedError(key);
             
             return nil;
         }
         
         if (scripts[key][@"?"] && ![scripts[key][@"?"] isKindOfClass:[NSString class]]) {
-            *error = [NSError error:ALOParseError because:@"Invalid `scripts` object: %@", key];
+            *error = keyedError(key);
             
             return nil;
         }
@@ -201,7 +209,7 @@ static NSString *gitFile = @".git";
             
             for (NSObject *item in commands) {
                 if (![item isKindOfClass:[NSString class]]) {
-                    *error = [NSError error:ALOParseError because:@"Invalid `scripts` object: %@", key];
+                    *error = keyedError(key);
                     
                     return nil;
                 }
@@ -216,7 +224,7 @@ static NSString *gitFile = @".git";
             continue;
         }
         
-        *error = [NSError error:ALOParseError because:@"Invalid `scripts` object: %@", key];
+        *error = keyedError(key);
         
         return nil;
     }
