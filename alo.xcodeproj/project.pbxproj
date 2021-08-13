@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		F67C12DC26C36BF6000E3142 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = F67C12DB26C36BF6000E3142 /* main.m */; };
 		F6E907CD26C38DA9009D231E /* Config.m in Sources */ = {isa = PBXBuildFile; fileRef = F6E907CC26C38DA9009D231E /* Config.m */; };
+		F6E907D226C6E4FC009D231E /* Error.m in Sources */ = {isa = PBXBuildFile; fileRef = F6E907D126C6E4FC009D231E /* Error.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -28,7 +29,8 @@
 		F67C12DB26C36BF6000E3142 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		F6E907CC26C38DA9009D231E /* Config.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Config.m; sourceTree = "<group>"; };
 		F6E907CE26C38DBC009D231E /* Config.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Config.h; sourceTree = "<group>"; };
-		F6E907D026C6C722009D231E /* Errors.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Errors.h; sourceTree = "<group>"; };
+		F6E907D026C6C722009D231E /* Error.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Error.h; sourceTree = "<group>"; };
+		F6E907D126C6E4FC009D231E /* Error.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Error.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -61,7 +63,7 @@
 		F67C12DA26C36BF6000E3142 /* alo */ = {
 			isa = PBXGroup;
 			children = (
-				F6E907CF26C6C710009D231E /* Errors */,
+				F6E907CF26C6C710009D231E /* Error */,
 				F6E907C826C38B7E009D231E /* Config */,
 				F67C12DB26C36BF6000E3142 /* main.m */,
 			);
@@ -77,12 +79,13 @@
 			path = Config;
 			sourceTree = "<group>";
 		};
-		F6E907CF26C6C710009D231E /* Errors */ = {
+		F6E907CF26C6C710009D231E /* Error */ = {
 			isa = PBXGroup;
 			children = (
-				F6E907D026C6C722009D231E /* Errors.h */,
+				F6E907D026C6C722009D231E /* Error.h */,
+				F6E907D126C6E4FC009D231E /* Error.m */,
 			);
-			path = Errors;
+			path = Error;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -141,6 +144,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F6E907D226C6E4FC009D231E /* Error.m in Sources */,
 				F67C12DC26C36BF6000E3142 /* main.m in Sources */,
 				F6E907CD26C38DA9009D231E /* Config.m in Sources */,
 			);

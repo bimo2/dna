@@ -15,6 +15,7 @@ int main(int argc, const char * argv[]) {
         
         if (error) {
             NSLog(@"%@", error.localizedDescription);
+            
             return 1;
         }
         

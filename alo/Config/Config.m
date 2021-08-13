@@ -6,7 +6,7 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "../Errors/Errors.h"
+#import "../Error/Error.h"
 #import "Config.h"
 
 @implementation ALOScript
@@ -33,11 +33,7 @@ static NSString *gitFile = @".git";
         NSArray *directory = [manager contentsOfDirectoryAtPath:path error:&fsError];
         
         if (fsError) {
-            NSDictionary *info = @{
-                NSLocalizedDescriptionKey: [NSString stringWithFormat:@"Could not read directory: %@", path],
-            };
-            
-            *error = [NSError errorWithDomain:ALOErrorDomain code:ALOReadError userInfo:info];
+            *error = [NSError error:ALOReadError because:@"Could not read directory: %@", path];
             
             return nil;
         }
@@ -49,11 +45,7 @@ static NSString *gitFile = @".git";
                 file = [NSString stringWithContentsOfFile:absolutePath encoding:NSUTF8StringEncoding error:&fsError];
                 
                 if (fsError) {
-                    NSDictionary *info = @{
-                        NSLocalizedDescriptionKey: [NSString stringWithFormat:@"Could not read file: %@", [path stringByAppendingPathComponent:item]],
-                    };
-                    
-                    *error = [NSError errorWithDomain:ALOErrorDomain code:ALOReadError userInfo:info];
+                    *error = [NSError error:ALOReadError because:@"Could not read file: %@", [path stringByAppendingPathComponent:item]];
                     
                     return nil;
                 }
@@ -75,11 +67,7 @@ static NSString *gitFile = @".git";
     id data = [NSJSONSerialization JSONObjectWithData:[json dataUsingEncoding:NSUTF8StringEncoding] options:NSJSONReadingMutableContainers error:&jsonError];
     
     if (jsonError || ![data isKindOfClass:[NSDictionary class]]) {
-        NSDictionary *info = @{
-            NSLocalizedDescriptionKey: @"Invalid JSON {} syntax",
-        };
-        
-        *error = [NSError errorWithDomain:ALOErrorDomain code:ALOParseError userInfo:info];
+        *error = [NSError error:ALOParseError because:@"Invalid JSON {} syntax"];
         
         return nil;
     }
@@ -105,14 +93,10 @@ static NSString *gitFile = @".git";
 }
 
 + (ALODependencies *)parseDependenciesFromData:(id)data error:(NSError **)error {
-    if (!data) return [NSDictionary dictionary];
+    if (!data) return [ALODependencies dictionary];
     
     if (![data isKindOfClass:[NSDictionary class]]) {
-        NSDictionary *info = @{
-            NSLocalizedDescriptionKey: @"Invalid `dependencies` object",
-        };
-        
-        *error = [NSError errorWithDomain:ALOErrorDomain code:ALOParseError userInfo:info];
+        *error = [NSError error:ALOParseError because:@"Invalid `dependencies` object"];
         
         return nil;
     }
@@ -132,22 +116,14 @@ static NSString *gitFile = @".git";
             NSMutableArray *array = dependencies[key];
             
             if ([array count] == 0 || [array count] > 2) {
-                NSDictionary *info = @{
-                    NSLocalizedDescriptionKey: [NSString stringWithFormat:@"Invalid `dependencies` object: %@", key],
-                };
-                
-                *error = [NSError errorWithDomain:ALOErrorDomain code:ALOParseError userInfo:info];
+                *error = [NSError error:ALOParseError because:@"Invalid `dependencies` object: %@", key];
                 
                 return nil;
             }
             
             for (NSObject *item in array) {
                 if (![item isKindOfClass:[NSString class]]) {
-                    NSDictionary *info = @{
-                        NSLocalizedDescriptionKey: [NSString stringWithFormat:@"Invalid `dependencies` object: %@", key],
-                    };
-                    
-                    *error = [NSError errorWithDomain:ALOErrorDomain code:ALOParseError userInfo:info];
+                    *error = [NSError error:ALOParseError because:@"Invalid `dependencies` object: %@", key];
                     
                     return nil;
                 }
@@ -156,40 +132,28 @@ static NSString *gitFile = @".git";
             continue;
         }
         
-        NSDictionary *info = @{
-            NSLocalizedDescriptionKey: [NSString stringWithFormat:@"Invalid `dependencies` object: %@", key],
-        };
-        
-        *error = [NSError errorWithDomain:ALOErrorDomain code:ALOParseError userInfo:info];
+        *error = [NSError error:ALOParseError because:@"Invalid `dependencies` object: %@", key];
         
         return nil;
     }
     
-    return [NSDictionary dictionaryWithDictionary:dependencies];
+    return [ALODependencies dictionaryWithDictionary:dependencies];
 }
 
 + (ALOEnv *)parseEnvFromData:(id)data error:(NSError **)error {
-    if (!data) return [NSDictionary dictionary];
+    if (!data) return [ALOEnv dictionary];
     
     if (![data isKindOfClass:[NSDictionary class]]) {
-        NSDictionary *info = @{
-            NSLocalizedDescriptionKey: @"Invalid `env` object",
-        };
-        
-        *error = [NSError errorWithDomain:ALOErrorDomain code:ALOParseError userInfo:info];
+        *error = [NSError error:ALOParseError because:@"Invalid `env` object"];
         
         return nil;
     }
     
-    NSDictionary *env = data;
+    ALOEnv *env = data;
     
     for (NSString *key in [env allKeys]) {
         if (![env[key] isKindOfClass:[NSString class]]) {
-            NSDictionary *info = @{
-                NSLocalizedDescriptionKey: [NSString stringWithFormat:@"Invalid `env` object: %@", key],
-            };
-            
-            *error = [NSError errorWithDomain:ALOErrorDomain code:ALOParseError userInfo:info];
+            *error = [NSError error:ALOParseError because:@"Invalid `env` object: %@", key];
             
             return nil;
         }
@@ -199,14 +163,10 @@ static NSString *gitFile = @".git";
 }
 
 + (ALOScripts *)parseScriptsFromData:(id)data error:(NSError **)error {
-    if (!data) return [NSDictionary dictionary];
+    if (!data) return [ALOScripts dictionary];
     
     if (![data isKindOfClass:[NSMutableDictionary class]]) {
-        NSDictionary *info = @{
-            NSLocalizedDescriptionKey: @"Invalid `scripts` object",
-        };
-        
-        *error = [NSError errorWithDomain:ALOErrorDomain code:ALOParseError userInfo:info];
+        *error = [NSError error:ALOParseError because:@"Invalid `scripts` object"];
         
         return nil;
     }
@@ -215,21 +175,13 @@ static NSString *gitFile = @".git";
     
     for (NSString *key in [scripts allKeys]) {
         if (![scripts[key] isKindOfClass:[NSDictionary class]]) {
-            NSDictionary *info = @{
-                NSLocalizedDescriptionKey: [NSString stringWithFormat:@"Invalid `scripts` object: %@", key],
-            };
-            
-            *error = [NSError errorWithDomain:ALOErrorDomain code:ALOParseError userInfo:info];
+            *error = [NSError error:ALOParseError because:@"Invalid `scripts` object: %@", key];
             
             return nil;
         }
         
         if (scripts[key][@"?"] && ![scripts[key][@"?"] isKindOfClass:[NSString class]]) {
-            NSDictionary *info = @{
-                NSLocalizedDescriptionKey: [NSString stringWithFormat:@"Invalid `scripts` object: %@", key],
-            };
-            
-            *error = [NSError errorWithDomain:ALOErrorDomain code:ALOParseError userInfo:info];
+            *error = [NSError error:ALOParseError because:@"Invalid `scripts` object: %@", key];
             
             return nil;
         }
@@ -249,11 +201,7 @@ static NSString *gitFile = @".git";
             
             for (NSObject *item in commands) {
                 if (![item isKindOfClass:[NSString class]]) {
-                    NSDictionary *info = @{
-                        NSLocalizedDescriptionKey: [NSString stringWithFormat:@"Invalid `scripts` object: %@", key],
-                    };
-                    
-                    *error = [NSError errorWithDomain:ALOErrorDomain code:ALOParseError userInfo:info];
+                    *error = [NSError error:ALOParseError because:@"Invalid `scripts` object: %@", key];
                     
                     return nil;
                 }
@@ -268,11 +216,7 @@ static NSString *gitFile = @".git";
             continue;
         }
         
-        NSDictionary *info = @{
-            NSLocalizedDescriptionKey: [NSString stringWithFormat:@"Invalid `scripts` object: %@", key],
-        };
-        
-        *error = [NSError errorWithDomain:ALOErrorDomain code:ALOParseError userInfo:info];
+        *error = [NSError error:ALOParseError because:@"Invalid `scripts` object: %@", key];
         
         return nil;
     }

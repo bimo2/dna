@@ -14,7 +14,7 @@ typedef NSDictionary<NSString *, NSString *> ALOEnv;
 @interface ALOScript : NSObject
 
 @property (nonatomic) NSString *info;
-@property (nonatomic) NSArray *run;
+@property (nonatomic) NSArray<NSString *> *run;
 
 @end
 
