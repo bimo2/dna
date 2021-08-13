@@ -13,9 +13,10 @@ int main(int argc, const char * argv[]) {
         ALOConfig *alo = [ALOConfig find];
         
         if (alo) {
-            NSLog(@"ALO Path: %@\n", alo.path);
-            NSLog(@"ALO Version: %li\n", alo.version);
-            NSLog(@"ALO Env: %@\n", alo.env);
+            NSLog(@"ALO Path: %@\n", [alo path]);
+            NSLog(@"ALO Version: %li\n", [alo version]);
+            NSLog(@"ALO Dependencies: %@\n", [alo dependencies]);
+            NSLog(@"ALO Env: %@\n", [alo env]);
         }
     }
     

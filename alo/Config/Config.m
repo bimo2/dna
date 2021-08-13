@@ -74,10 +74,11 @@ static NSString *gitFile = @".git";
     ALOConfig *config = [[ALOConfig alloc] init];
     
     config.path = [NSString stringWithString:path];
-    config.version = [object[@"_"] integerValue];
+    config.version = [object[@"_alo"] integerValue];
+    config.dependencies = [self parseDependenciesFromObject:object[@"dependencies"]];
     
     if ([object[@"env"] isKindOfClass:[NSDictionary class]]) {
-        NSMutableDictionary *env = [NSMutableDictionary dictionaryWithDictionary:object[@"env"]];
+        NSMutableDictionary *env = object[@"env"];
         
         for (NSString *key in [env allKeys]) {
             if (![env[key] isKindOfClass:[NSString class]]) {
@@ -91,6 +92,41 @@ static NSString *gitFile = @".git";
     }
     
     return config;
+}
+
++ (NSDictionary *)parseDependenciesFromObject:(id)data {
+    if (![data isKindOfClass:[NSDictionary class]]) {
+        return [NSDictionary dictionary];
+    }
+    
+    NSMutableDictionary *dependencies = [NSMutableDictionary dictionaryWithDictionary:data];
+    
+    for (NSString *key in [dependencies allKeys]) {
+        if ([dependencies[key] isKindOfClass:[NSString class]]) {
+            [dependencies setValue:@[dependencies[key]] forKey:key];
+        } else if ([dependencies[key] isKindOfClass:[NSMutableArray class]]) {
+            NSMutableArray *array = dependencies[key];
+            BOOL isValid = true;
+            
+            for (NSObject *item in array) {
+                if (![item isKindOfClass:[NSString class]]) {
+                    isValid = false;
+                    
+                    break;
+                }
+            }
+            
+            if (isValid && [array count] > 0) {
+                [dependencies setValue:[NSArray arrayWithArray:array] forKey:key];
+            } else {
+                [dependencies removeObjectForKey:key];
+            }
+        } else {
+            [dependencies removeObjectForKey:key];
+        }
+    }
+    
+    return [NSDictionary dictionaryWithDictionary:dependencies];
 }
 
 @end

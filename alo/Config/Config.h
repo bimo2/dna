@@ -12,6 +12,7 @@
 
 @property (nonatomic) NSString *path;
 @property (nonatomic) NSInteger version;
+@property (nonatomic) NSDictionary *dependencies;
 @property (nonatomic) NSDictionary *env;
 
 + (ALOConfig *)find;
