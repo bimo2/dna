@@ -8,6 +8,8 @@
 #import <Foundation/Foundation.h>
 #import "Config.h"
 
+@implementation ALOScript @end
+
 @implementation ALOConfig
 
 static NSString *fileName = @"alo.json";
@@ -46,9 +48,7 @@ static NSString *gitFile = @".git";
                 break;
             }
             
-            if ([item isEqualToString: gitFile]) {
-                isGitPath = YES;
-            }
+            if ([item isEqualToString: gitFile]) isGitPath = YES;
         }
         
         path = [path stringByDeletingLastPathComponent];
@@ -89,13 +89,18 @@ static NSString *gitFile = @".git";
         return nil;
     }
     
+    config.scripts = [self parseScriptsFromData:object[@"scripts"] error:error];
+    
+    if (*error) {
+        // do something
+        return nil;
+    }
+    
     return config;
 }
 
-+ (NSDictionary *)parseDependenciesFromData:(id)data error:(NSError **)error {
-    if (!data) {
-        return [NSDictionary dictionary];
-    }
++ (ALODependencies *)parseDependenciesFromData:(id)data error:(NSError **)error {
+    if (!data) return [NSDictionary dictionary];
     
     if (![data isKindOfClass:[NSDictionary class]]) {
         // do something
@@ -131,16 +136,15 @@ static NSString *gitFile = @".git";
             continue;
         }
         
+        // do something
         return nil;
     }
     
     return [NSDictionary dictionaryWithDictionary:dependencies];
 }
 
-+ (NSDictionary *)parseEnvFromData:(id)data error:(NSError **)error {
-    if (!data) {
-        return [NSDictionary dictionary];
-    }
++ (ALOEnv *)parseEnvFromData:(id)data error:(NSError **)error {
+    if (!data) return [NSDictionary dictionary];
     
     if (![data isKindOfClass:[NSDictionary class]]) {
         // do something
@@ -157,6 +161,63 @@ static NSString *gitFile = @".git";
     }
     
     return env;
+}
+
++ (ALOScripts *)parseScriptsFromData:(id)data error:(NSError **)error {
+    if (!data) return [NSDictionary dictionary];
+    
+    if (![data isKindOfClass:[NSMutableDictionary class]]) {
+        // do something
+        return nil;
+    }
+    
+    NSMutableDictionary *scripts = data;
+    
+    for (NSString *key in [scripts allKeys]) {
+        if (![scripts[key] isKindOfClass:[NSDictionary class]]) {
+            // do something
+            return nil;
+        }
+        
+        if (![scripts[key][@"?"] isKindOfClass:[NSString class]]) {
+            // do something
+            return nil;
+        }
+        
+        if ([scripts[key][@"run"] isKindOfClass:[NSString class]]) {
+            ALOScript *script = [[ALOScript alloc] init];
+            
+            script.info = [NSString stringWithString:scripts[key][@"?"]];
+            script.run = @[[NSString stringWithString:scripts[key][@"run"]]];
+            [scripts setObject:script forKey:key];
+            
+            continue;
+        }
+        
+        if ([scripts[key][@"run"] isKindOfClass:[NSMutableArray class]]) {
+            NSMutableArray *commands = scripts[key][@"run"];
+            
+            for (NSObject *command in commands) {
+                if (![command isKindOfClass:[NSString class]]) {
+                    // do something
+                    return nil;
+                }
+            }
+            
+            ALOScript *script = [[ALOScript alloc] init];
+            
+            script.info = [NSString stringWithString:scripts[key][@"?"]];
+            script.run = [NSArray arrayWithArray:commands];
+            [scripts setObject:script forKey:key];
+            
+            continue;
+        }
+        
+        // do something
+        return nil;
+    }
+    
+    return [NSDictionary dictionaryWithDictionary:scripts];
 }
 
 @end

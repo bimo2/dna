@@ -13,11 +13,16 @@ int main(int argc, const char * argv[]) {
         NSError *error;
         ALOConfig *alo = [ALOConfig find:&error];
         
+        if (error) {
+            return 1;
+        }
+        
         if (alo) {
             NSLog(@"ALO Path: %@\n", [alo path]);
             NSLog(@"ALO Version: %li\n", [alo version]);
             NSLog(@"ALO Dependencies: %@\n", [alo dependencies]);
             NSLog(@"ALO Env: %@\n", [alo env]);
+            NSLog(@"ALO Scripts: %@\n", [alo scripts]);
         }
     }
     
