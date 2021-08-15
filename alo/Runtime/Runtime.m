@@ -11,8 +11,11 @@
 
 @implementation ALORuntime
 
-- (instancetype)initWithConfig:(ALOConfig *)config {
-    if (self = [super init]) _config = config;
+- (instancetype)initWithVersion:(NSString *)version andConfig:(ALOConfig *)config {
+    if (self = [super init]) {
+        _semver = version;
+        _config = config;
+    }
     
     return self;
 }
@@ -32,6 +35,18 @@
     
     [Console print:@"- " TEXT_BOLD "version, v" TEXT_RESET];
     [Console print:@"  Get version info\n"];
+    
+    return 0;
+}
+
+- (int)version {
+    #if __LP64__
+    NSString *arch = @"64-bit";
+    #else
+    NSString *arch = @"32-bit";
+    #endif
+    
+    [Console message:[NSString stringWithFormat:@"version %@ (%@)", [self semver], arch] withContext:nil];
     
     return 0;
 }

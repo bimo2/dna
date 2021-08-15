@@ -12,11 +12,14 @@
 
 @interface ALORuntime : NSObject
 
+@property (nonatomic) NSString *semver;
 @property (nonatomic) ALOConfig *config;
 
-- (instancetype)initWithConfig:(ALOConfig *)config;
+- (instancetype)initWithVersion:(NSString *)version andConfig:(ALOConfig *)config;
 
 - (int)manual;
+
+- (int)version;
 
 @end
 

@@ -21,10 +21,19 @@ int main(int argc, const char * argv[]) {
             return 1;
         }
         
-        ALORuntime *alo = [[ALORuntime alloc] initWithConfig:config];
+        NSString *version = @"0.1.0";
+        ALORuntime *alo = [[ALORuntime alloc] initWithVersion:version andConfig:config];
         
         if (argc < 2) {
             return [alo manual];
+        }
+        
+        NSString *script = [NSString stringWithCString:argv[1] encoding:NSUTF8StringEncoding];
+        
+        if ([script isEqualToString:@"version"] || [script isEqualToString:@"v"]) {
+            return [alo version];
+        } else {
+            [Console error:[NSString stringWithFormat:@"`%@` not defined", script]];
         }
     }
     
