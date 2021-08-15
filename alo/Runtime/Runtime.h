@@ -19,6 +19,8 @@
 
 - (int)manual;
 
+- (int)create;
+
 - (int)version;
 
 @end

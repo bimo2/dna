@@ -12,6 +12,7 @@ enum {
     ALOReadError = 100,
     ALOWriteError,
     ALOParseError,
+    ALORuntimeError,
 };
 
 @interface NSError (ALOError)

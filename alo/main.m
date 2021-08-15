@@ -6,9 +6,10 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "Console/Console.h"
+#import "Resources/Resources.h"
 #import "Config/Config.h"
 #import "Runtime/Runtime.h"
-#import "Console/Console.h"
 
 int main(int argc, const char * argv[]) {
     @autoreleasepool {
@@ -18,11 +19,10 @@ int main(int argc, const char * argv[]) {
         if (error) {
             [Console error:error.localizedDescription];
             
-            return 1;
+            return (int) error.code;
         }
         
-        NSString *version = @"0.1.0";
-        ALORuntime *alo = [[ALORuntime alloc] initWithVersion:version andConfig:config];
+        ALORuntime *alo = [[ALORuntime alloc] initWithVersion:[ALOResources latestVersion] andConfig:config];
         
         if (argc < 2) {
             return [alo manual];
@@ -30,7 +30,9 @@ int main(int argc, const char * argv[]) {
         
         NSString *script = [NSString stringWithCString:argv[1] encoding:NSUTF8StringEncoding];
         
-        if ([script isEqualToString:@"version"] || [script isEqualToString:@"v"]) {
+        if ([script isEqualToString:@"init"] || [script isEqualToString:@"i"]) {
+            return [alo create];
+        } else if ([script isEqualToString:@"version"] || [script isEqualToString:@"v"]) {
             return [alo version];
         } else {
             [Console error:[NSString stringWithFormat:@"`%@` not defined", script]];

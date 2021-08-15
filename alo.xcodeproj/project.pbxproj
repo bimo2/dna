@@ -12,6 +12,7 @@
 		F6E907D226C6E4FC009D231E /* Error.m in Sources */ = {isa = PBXBuildFile; fileRef = F6E907D126C6E4FC009D231E /* Error.m */; };
 		F6E907D826C72AE1009D231E /* Console.m in Sources */ = {isa = PBXBuildFile; fileRef = F6E907D726C72AE1009D231E /* Console.m */; };
 		F6E907DA26C86AE7009D231E /* Runtime.m in Sources */ = {isa = PBXBuildFile; fileRef = F6E907D926C86AE7009D231E /* Runtime.m */; };
+		F6E907DE26C9782D009D231E /* Resources.m in Sources */ = {isa = PBXBuildFile; fileRef = F6E907DD26C9782D009D231E /* Resources.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -37,6 +38,8 @@
 		F6E907D626C72AC3009D231E /* Console.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Console.h; sourceTree = "<group>"; };
 		F6E907D726C72AE1009D231E /* Console.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Console.m; sourceTree = "<group>"; };
 		F6E907D926C86AE7009D231E /* Runtime.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Runtime.m; sourceTree = "<group>"; };
+		F6E907DC26C977D3009D231E /* Resources.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Resources.h; sourceTree = "<group>"; };
+		F6E907DD26C9782D009D231E /* Resources.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Resources.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -69,6 +72,7 @@
 		F67C12DA26C36BF6000E3142 /* alo */ = {
 			isa = PBXGroup;
 			children = (
+				F6E907DB26C977B4009D231E /* Resources */,
 				F6E907D526C728BC009D231E /* Console */,
 				F6E907D326C71AC8009D231E /* Runtime */,
 				F6E907CF26C6C710009D231E /* Error */,
@@ -112,6 +116,15 @@
 				F6E907D726C72AE1009D231E /* Console.m */,
 			);
 			path = Console;
+			sourceTree = "<group>";
+		};
+		F6E907DB26C977B4009D231E /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				F6E907DC26C977D3009D231E /* Resources.h */,
+				F6E907DD26C9782D009D231E /* Resources.m */,
+			);
+			path = Resources;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -171,6 +184,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				F6E907D226C6E4FC009D231E /* Error.m in Sources */,
+				F6E907DE26C9782D009D231E /* Resources.m in Sources */,
 				F67C12DC26C36BF6000E3142 /* main.m in Sources */,
 				F6E907CD26C38DA9009D231E /* Config.m in Sources */,
 				F6E907DA26C86AE7009D231E /* Runtime.m in Sources */,

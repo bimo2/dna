@@ -14,8 +14,11 @@
 
 @implementation ALOConfig
 
-static NSString *fileName = @"alo.json";
 static NSString *gitFile = @".git";
+
++ (NSString *)fileName {
+    return @"alo.json";
+}
 
 + (ALOConfig *)find:(NSError **)error {
     NSFileManager *manager = [NSFileManager defaultManager];
@@ -39,7 +42,7 @@ static NSString *gitFile = @".git";
         }
         
         for (NSString *item in directory) {
-            if ([item isEqualToString:fileName]) {
+            if ([item isEqualToString:[self fileName]]) {
                 NSString *absolutePath = [path stringByAppendingPathComponent:item];
                 
                 file = [NSString stringWithContentsOfFile:absolutePath encoding:NSUTF8StringEncoding error:&fsError];

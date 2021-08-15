@@ -22,6 +22,7 @@ typedef NSDictionary<NSString *, ALOScript *> ALOScripts;
 
 @interface ALOConfig : NSObject
 
+@property (class, nonatomic, readonly) NSString *fileName;
 @property (nonatomic) NSString *path;
 @property (nonatomic) NSInteger version;
 @property (nonatomic) ALODependencies *dependencies;
