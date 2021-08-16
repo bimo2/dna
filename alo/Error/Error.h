@@ -19,7 +19,7 @@ enum {
 
 @property (class, readonly) NSString *domain;
 
-+ (NSError *)error:(NSInteger)code because:(NSString *)reason, ...;
++ (NSError *)error:(NSInteger)code because:(NSString *)reason;
 
 @end
 

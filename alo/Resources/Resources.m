@@ -8,10 +8,10 @@
 #import <Foundation/Foundation.h>
 #import "Resources.h"
 
-#define ALO_PATH "/usr/local/bin/_"
+#define ALO_PATH "/usr/local/bin/alo"
 #define ALO_URL "https://alo.sh"
 #define SAFARI_PATH "/Applications/Safari.app"
-#define SAFARI_URL "https://www.apple.com/safari"
+#define SAFARI_URL "https://apple.com/safari"
 #define XCODE_BINARY "xcodebuild"
 #define XCODE_URL "https://developer.apple.com/xcode"
 
@@ -58,11 +58,11 @@
     "    },\n"
     "    \"dev\": {\n"
     "      \"?\": \"Develop ...\",\n"
-    "      \"run\": \"start server :&PORT\"\n"
+    "      \"run\": \"echo -e start server :&PORT\"\n"
     "    },\n"
     "    \"test\": {\n"
     "      \"?\": \"Test ...\",\n"
-    "      \"run\": \"unit-test #file?#\"\n"
+    "      \"run\": \"echo -e unit-test #file?#\"\n"
     "    }\n"
     "  }\n"
     "}\n";

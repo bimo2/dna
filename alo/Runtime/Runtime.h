@@ -21,6 +21,8 @@
 
 - (int)create;
 
+- (int)resolve;
+
 - (int)version;
 
 @end

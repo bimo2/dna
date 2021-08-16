@@ -36,7 +36,7 @@ static NSString *gitFile = @".git";
         NSArray *directory = [manager contentsOfDirectoryAtPath:path error:&fsError];
         
         if (fsError) {
-            *error = [NSError error:ALOReadError because:@"Could not read directory: %@", path];
+            *error = [NSError error:ALOReadError because:[NSString stringWithFormat:@"Could not read directory: %@", path]];
             
             return nil;
         }
@@ -48,7 +48,7 @@ static NSString *gitFile = @".git";
                 file = [NSString stringWithContentsOfFile:absolutePath encoding:NSUTF8StringEncoding error:&fsError];
                 
                 if (fsError) {
-                    *error = [NSError error:ALOReadError because:@"Could not read file: %@", [path stringByAppendingPathComponent:item]];
+                    *error = [NSError error:ALOReadError because:[NSString stringWithFormat:@"Could not read file: %@", [path stringByAppendingPathComponent:item]]];
                     
                     return nil;
                 }
@@ -107,7 +107,7 @@ static NSString *gitFile = @".git";
     NSMutableDictionary *dependencies = [NSMutableDictionary dictionaryWithDictionary:data];
     
     NSError *(^keyedError)(NSString *) = ^NSError *(NSString *key) {
-        return [NSError error:ALOParseError because:@"Invalid `dependencies` object: %@", key];
+        return [NSError error:ALOParseError because:[NSString stringWithFormat:@"Invalid `dependencies` object: %@", key]];
     };
     
     for (NSString *key in [dependencies allKeys]) {
@@ -160,7 +160,7 @@ static NSString *gitFile = @".git";
     
     for (NSString *key in [env allKeys]) {
         if (![env[key] isKindOfClass:[NSString class]]) {
-            *error = [NSError error:ALOParseError because:@"Invalid `env` object: %@", key];
+            *error = [NSError error:ALOParseError because:[NSString stringWithFormat:@"Invalid `env` object: %@", key]];
             
             return nil;
         }
@@ -181,7 +181,7 @@ static NSString *gitFile = @".git";
     NSMutableDictionary *scripts = data;
     
     NSError *(^keyedError)(NSString *) = ^NSError *(NSString *key) {
-        return [NSError error:ALOParseError because:@"Invalid `scripts` object: %@", key];
+        return [NSError error:ALOParseError because:[NSString stringWithFormat:@"Invalid `scripts` object: %@", key]];
     };
     
     for (NSString *key in [scripts allKeys]) {

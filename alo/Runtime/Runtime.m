@@ -66,6 +66,43 @@
     return 0;
 }
 
+- (int)resolve {
+    if (![self config]) {
+        [Console warning:[NSString stringWithFormat:@"`%@` not in scope", [ALOConfig fileName]]];
+        
+        return 0;
+    }
+    
+    ALODependencies *dependencies = [[self config] dependencies];
+    
+    if (![dependencies count]) {
+        [Console print:@TEXT_BOLD "\u2713 No dependencies"];
+        
+        return 0;
+    }
+    
+    for (NSString *key in dependencies) {
+        NSString *target = [dependencies[key] firstObject];
+        NSInteger status;
+        
+        if ([target isAbsolutePath]) {
+            status = ![[NSFileManager defaultManager] fileExistsAtPath:target];
+        } else {
+            status = system([[NSString stringWithFormat:@"sh -c \"which -s %@\"", target] UTF8String]);
+        }
+        
+        if (status == 0) {
+            [Console print:[NSString stringWithFormat:@TEXT_BOLD TEXT_GREEN "\u2713 %@" TEXT_RESET, key]];
+        } else if ([dependencies[key] count] > 1) {
+            [Console print:[NSString stringWithFormat:@TEXT_BOLD TEXT_RED "\u2717 %@" TEXT_RESET TEXT_RED ": %@" TEXT_RESET, key, [dependencies[key] objectAtIndex:1]]];
+        } else {
+            [Console print:[NSString stringWithFormat:@TEXT_BOLD TEXT_RED "\u2717 %@" TEXT_RESET, key]];
+        }
+    }
+    
+    return 0;
+}
+
 - (int)version {
     #if __LP64__
     NSString *arch = @"64-bit";

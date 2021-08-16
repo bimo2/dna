@@ -14,7 +14,7 @@
 int main(int argc, const char * argv[]) {
     @autoreleasepool {
         NSError *error;
-        ALOConfig *config = [ALOConfig find:&error];
+        ALOConfig *alo = [ALOConfig find:&error];
         
         if (error) {
             [Console error:error.localizedDescription];
@@ -22,18 +22,18 @@ int main(int argc, const char * argv[]) {
             return (int) error.code;
         }
         
-        ALORuntime *alo = [[ALORuntime alloc] initWithVersion:[ALOResources latestVersion] andConfig:config];
+        ALORuntime *app = [[ALORuntime alloc] initWithVersion:[ALOResources latestVersion] andConfig:alo];
         
-        if (argc < 2) {
-            return [alo manual];
-        }
+        if (argc < 2) return [app manual];
         
         NSString *script = [NSString stringWithCString:argv[1] encoding:NSUTF8StringEncoding];
         
         if ([script isEqualToString:@"init"] || [script isEqualToString:@"i"]) {
-            return [alo create];
+            return [app create];
+        } else if ([script isEqualToString:@"deps"] || [script isEqualToString:@"..."]) {
+            return [app resolve];
         } else if ([script isEqualToString:@"version"] || [script isEqualToString:@"v"]) {
-            return [alo version];
+            return [app version];
         } else {
             [Console error:[NSString stringWithFormat:@"`%@` not defined", script]];
         }

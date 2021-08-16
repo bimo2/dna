@@ -14,15 +14,10 @@
     return @"com.balance.alo";
 }
 
-+ (NSError *)error:(NSInteger)code because:(NSString *)reason, ... {
-    va_list list;
-    va_start(list, reason);
-    
++ (NSError *)error:(NSInteger)code because:(NSString *)reason {
     NSDictionary *userInfo = @{
-        NSLocalizedDescriptionKey: [[NSString alloc] initWithFormat:reason arguments:list],
+        NSLocalizedDescriptionKey: reason,
     };
-    
-    va_end(list);
     
     return [NSError errorWithDomain:[self domain] code:code userInfo:userInfo];
 }
