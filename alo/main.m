@@ -34,6 +34,8 @@ int main(int argc, const char * argv[]) {
             return [app resolve];
         } else if ([script isEqualToString:@"version"] || [script isEqualToString:@"v"]) {
             return [app version];
+        } else if ([script isEqualToString:@"list"] || [script isEqualToString:@"ls"]) {
+            return [app list];
         } else {
             [Console error:[NSString stringWithFormat:@"`%@` not defined", script]];
         }

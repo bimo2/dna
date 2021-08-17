@@ -16,6 +16,8 @@ typedef NSDictionary<NSString *, NSString *> ALOEnv;
 @property (nonatomic) NSString *info;
 @property (nonatomic) NSArray<NSString *> *run;
 
+- (instancetype)initWithInfo:(NSString *)info andRun:(NSArray<NSString *> *)run;
+
 @end
 
 typedef NSDictionary<NSString *, ALOScript *> ALOScripts;

@@ -25,17 +25,17 @@
 - (int)manual {
     if ([self config]) {
         [Console message:[NSString stringWithFormat:@"Ready! (scope: %@)\n", [[self config] path]] withContext:nil];
-        [Console print:@"- " TEXT_BOLD "deps, ..." TEXT_RESET];
+        [Console print:@"+ " TEXT_BOLD "deps, ..." TEXT_RESET];
         [Console print:@"  Resolve software dependencies\n"];
-        [Console print:@"- " TEXT_BOLD "list, ls" TEXT_RESET];
+        [Console print:@"+ " TEXT_BOLD "list, ls" TEXT_RESET];
         [Console print:@"  List project scripts\n"];
     } else {
         [Console message:@"Not ready...\n" withContext:nil];
-        [Console print:@"- " TEXT_BOLD "init, i" TEXT_RESET];
+        [Console print:@"+ " TEXT_BOLD "init, i" TEXT_RESET];
         [Console print:@"  Create `alo.json` template\n"];
     }
     
-    [Console print:@"- " TEXT_BOLD "version, v" TEXT_RESET];
+    [Console print:@"+ " TEXT_BOLD "version, v" TEXT_RESET];
     [Console print:@"  Get version info\n"];
     
     return 0;
@@ -103,12 +103,40 @@
     return 0;
 }
 
+- (int)list {
+    if (![self config]) {
+        [Console warning:[NSString stringWithFormat:@"`%@` not in scope", [ALOConfig fileName]]];
+        
+        return 0;
+    }
+    
+    ALOScripts *scripts = [[self config] scripts];
+    
+    [Console message:[NSString stringWithFormat:@"%lu script%@", [scripts count], [scripts count] == 1 ? @"" : @"s"] withContext:nil];
+    
+    if ([scripts count] > 0) {
+        NSArray<NSString *> *keys = [[scripts allKeys] sortedArrayUsingSelector:@selector(compare:)];
+        
+        for (NSString *key in keys) {
+            ALOScript *script = scripts[key];
+            
+            [Console print:[NSString stringWithFormat:@"\n- " TEXT_BOLD "%@" TEXT_RESET, key]];
+            
+            if ([script info]) [Console print:[NSString stringWithFormat:@"  %@", [script info]]];
+        }
+        
+        [Console print:@""];
+    }
+    
+    return 0;
+}
+
 - (int)version {
-    #if __LP64__
+#if __LP64__
     NSString *arch = @"64-bit";
-    #else
+#else
     NSString *arch = @"32-bit";
-    #endif
+#endif
     
     [Console message:[NSString stringWithFormat:@"version %@ (%@)", [self semver], arch] withContext:nil];
     

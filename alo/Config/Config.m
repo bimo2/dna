@@ -10,6 +10,21 @@
 #import "Config.h"
 
 @implementation ALOScript
+
+- (instancetype)initWithInfo:(NSString *)info andRun:(NSArray<NSString *> *)run {
+    if (self = [super init]) {
+        if (info) {
+            _info = [NSString stringWithString:info];
+        } else {
+            _info = nil;
+        }
+        
+        _run = [NSArray arrayWithArray:run];
+    }
+    
+    return self;
+}
+
 @end
 
 @implementation ALOConfig
@@ -198,10 +213,8 @@ static NSString *gitFile = @".git";
         }
         
         if ([scripts[key][@"run"] isKindOfClass:[NSString class]]) {
-            ALOScript *script = [[ALOScript alloc] init];
+            ALOScript *script = [[ALOScript alloc] initWithInfo:scripts[key][@"?"] andRun:@[[NSString stringWithString:scripts[key][@"run"]]]];
             
-            script.info = [NSString stringWithString:scripts[key][@"?"] ?: @""];
-            script.run = @[[NSString stringWithString:scripts[key][@"run"]]];
             [scripts setObject:script forKey:key];
             
             continue;
@@ -218,10 +231,8 @@ static NSString *gitFile = @".git";
                 }
             }
             
-            ALOScript *script = [[ALOScript alloc] init];
+            ALOScript *script = [[ALOScript alloc] initWithInfo:scripts[key][@"?"] andRun:commands];
             
-            script.info = [NSString stringWithString:scripts[key][@"?"] ?: @""];
-            script.run = [NSArray arrayWithArray:commands];
             [scripts setObject:script forKey:key];
             
             continue;

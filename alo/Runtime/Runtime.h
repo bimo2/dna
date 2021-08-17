@@ -23,6 +23,8 @@
 
 - (int)resolve;
 
+- (int)list;
+
 - (int)version;
 
 @end
