@@ -11,7 +11,7 @@
 #import "Config/Config.h"
 #import "Runtime/Runtime.h"
 
-int main(int argc, const char * argv[]) {
+int main(int argc, const char *argv[]) {
     @autoreleasepool {
         NSError *error;
         ALOConfig *alo = [ALOConfig find:&error];

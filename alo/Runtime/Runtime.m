@@ -9,6 +9,7 @@
 #import "../Error/Error.h"
 #import "../Console/Console.h"
 #import "../Resources/Resources.h"
+#import "../Lexer/Lexer.h"
 #import "Runtime.h"
 
 @implementation ALORuntime
@@ -119,8 +120,16 @@
         
         for (NSString *key in keys) {
             ALOScript *script = scripts[key];
+            NSArray<ALOToken *> *tokens = [ALOLexer tokenize:[script run]];
+            NSMutableArray<NSString *> *signature = [NSMutableArray array];
             
-            [Console print:[NSString stringWithFormat:@"\n- " TEXT_BOLD "%@" TEXT_RESET, key]];
+            for (ALOToken *token in tokens) {
+                NSString *format = [token required] ? @"%@!" : @"%@?";
+                
+                [signature addObject:[NSString stringWithFormat:format, [token name]]];
+            }
+            
+            [Console print:[NSString stringWithFormat:@"\n- " TEXT_BOLD "%@ %@" TEXT_RESET, key, [signature componentsJoinedByString:@" "]]];
             
             if ([script info]) [Console print:[NSString stringWithFormat:@"  %@", [script info]]];
         }

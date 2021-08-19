@@ -13,6 +13,7 @@
 		F6E907D826C72AE1009D231E /* Console.m in Sources */ = {isa = PBXBuildFile; fileRef = F6E907D726C72AE1009D231E /* Console.m */; };
 		F6E907DA26C86AE7009D231E /* Runtime.m in Sources */ = {isa = PBXBuildFile; fileRef = F6E907D926C86AE7009D231E /* Runtime.m */; };
 		F6E907DE26C9782D009D231E /* Resources.m in Sources */ = {isa = PBXBuildFile; fileRef = F6E907DD26C9782D009D231E /* Resources.m */; };
+		F6E907E626CC9257009D231E /* Lexer.m in Sources */ = {isa = PBXBuildFile; fileRef = F6E907E526CC9257009D231E /* Lexer.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -40,6 +41,8 @@
 		F6E907D926C86AE7009D231E /* Runtime.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Runtime.m; sourceTree = "<group>"; };
 		F6E907DC26C977D3009D231E /* Resources.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Resources.h; sourceTree = "<group>"; };
 		F6E907DD26C9782D009D231E /* Resources.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Resources.m; sourceTree = "<group>"; };
+		F6E907E426CC3ED5009D231E /* Lexer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Lexer.h; sourceTree = "<group>"; };
+		F6E907E526CC9257009D231E /* Lexer.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Lexer.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -73,10 +76,11 @@
 			isa = PBXGroup;
 			children = (
 				F6E907DB26C977B4009D231E /* Resources */,
-				F6E907D526C728BC009D231E /* Console */,
-				F6E907D326C71AC8009D231E /* Runtime */,
 				F6E907CF26C6C710009D231E /* Error */,
+				F6E907D526C728BC009D231E /* Console */,
 				F6E907C826C38B7E009D231E /* Config */,
+				F6E907E226CC3EB8009D231E /* Lexer */,
+				F6E907D326C71AC8009D231E /* Runtime */,
 				F67C12DB26C36BF6000E3142 /* main.m */,
 			);
 			path = alo;
@@ -125,6 +129,15 @@
 				F6E907DD26C9782D009D231E /* Resources.m */,
 			);
 			path = Resources;
+			sourceTree = "<group>";
+		};
+		F6E907E226CC3EB8009D231E /* Lexer */ = {
+			isa = PBXGroup;
+			children = (
+				F6E907E426CC3ED5009D231E /* Lexer.h */,
+				F6E907E526CC9257009D231E /* Lexer.m */,
+			);
+			path = Lexer;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -188,6 +201,7 @@
 				F67C12DC26C36BF6000E3142 /* main.m in Sources */,
 				F6E907CD26C38DA9009D231E /* Config.m in Sources */,
 				F6E907DA26C86AE7009D231E /* Runtime.m in Sources */,
+				F6E907E626CC9257009D231E /* Lexer.m in Sources */,
 				F6E907D826C72AE1009D231E /* Console.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
