@@ -8,6 +8,8 @@
 #ifndef LEXER_H
 #define LEXER_H
 
+#import "../Config/Config.h"
+
 @interface ALOToken : NSObject
 
 @property (nonatomic) NSString *name;
@@ -21,6 +23,8 @@
 @end
 
 @interface ALOLexer : NSObject
+
++ (NSArray<NSString *> *)compile:(NSArray<NSString *> *)lines env:(ALOEnv *)env arguments:(NSArray<NSString *> *)arguments;
 
 + (NSArray<ALOToken *> *)tokenize:(NSArray<NSString *> *)lines;
 

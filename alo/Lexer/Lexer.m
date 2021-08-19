@@ -50,6 +50,21 @@ static NSString *valuePattern = @"(?<= -> )(.*?)(?=#)";
 
 static NSString *tokenPattern = @"#(?<=#)((\\w+[\?!]?)|(\\w+ -> ([^\\s#]+|\"[^#]+\")))(?=#)#";
 
++ (NSArray<NSString *> *)compile:(NSArray<NSString *> *)lines env:(ALOEnv *)env arguments:(NSArray<NSString *> *)arguments {
+    NSMutableArray<NSString *> *instructions = [NSMutableArray arrayWithArray:lines];
+    
+    for (NSString *key in env) {
+        NSString *replace = [NSString stringWithFormat:@"&%@", key];
+        NSString *value = env[key];
+        
+        for (NSInteger i = 0; i < [instructions count]; i++) {
+            [instructions replaceObjectAtIndex:i withObject:[instructions[i] stringByReplacingOccurrencesOfString:replace withString:value]];
+        }
+    }
+    
+    return [NSArray arrayWithArray:instructions];
+}
+
 + (NSArray<ALOToken *> *)tokenize:(NSArray<NSString *> *)lines {
     NSMutableArray<ALOToken *> *tokens = [NSMutableArray array];
     NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:tokenPattern options:NSRegularExpressionCaseInsensitive error:nil];

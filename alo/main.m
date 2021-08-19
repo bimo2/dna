@@ -37,7 +37,13 @@ int main(int argc, const char *argv[]) {
         } else if ([script isEqualToString:@"list"] || [script isEqualToString:@"ls"]) {
             return [app list];
         } else {
-            [Console error:[NSString stringWithFormat:@"`%@` not defined", script]];
+            NSMutableArray *arguments = [NSMutableArray array];
+            
+            for (int i = 1; i < argc; i++) {
+                [arguments addObject:[NSString stringWithCString:argv[i] encoding:NSUTF8StringEncoding]];
+            }
+            
+            return [app execute:script arguments:arguments];
         }
     }
     

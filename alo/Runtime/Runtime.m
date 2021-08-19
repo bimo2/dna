@@ -112,8 +112,9 @@
     }
     
     ALOScripts *scripts = [[self config] scripts];
+    NSString *suffix = [scripts count] == 1 ? @"" : @"s";
     
-    [Console message:[NSString stringWithFormat:@"%lu script%@", [scripts count], [scripts count] == 1 ? @"" : @"s"] withContext:nil];
+    [Console message:[NSString stringWithFormat:@"%lu script%@", [scripts count], suffix] withContext:nil];
     
     if ([scripts count] > 0) {
         NSArray<NSString *> *keys = [[scripts allKeys] sortedArrayUsingSelector:@selector(compare:)];
@@ -135,6 +136,24 @@
         }
         
         [Console print:@""];
+    }
+    
+    return 0;
+}
+
+- (int)execute:(NSString *)key arguments:(NSArray<NSString *> *)arguments {
+    ALOScript *script = [[self config] scripts][key];
+    
+    if (!script) {
+        [Console error:[NSString stringWithFormat:@"`%@` not defined", key]];
+        
+        return ALORuntimeError;
+    }
+    
+    NSArray<NSString *> *instructions = [ALOLexer compile:[script run] env:[[self config] env] arguments:arguments];
+    
+    for (NSString *line in instructions) {
+        NSLog(@"%@\n", line);
     }
     
     return 0;

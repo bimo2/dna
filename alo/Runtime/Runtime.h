@@ -25,6 +25,8 @@
 
 - (int)list;
 
+- (int)execute:(NSString *)key arguments:(NSArray<NSString *> *)arguments;
+
 - (int)version;
 
 @end
