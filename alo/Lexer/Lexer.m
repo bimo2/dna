@@ -70,8 +70,9 @@ static NSString *skip = @"-";
     NSArray<ALOToken *> *tokens = [ALOLexer tokenize:instructions];
     
     for (NSInteger i = 0; i < [tokens count]; i++) {
-        ALOToken *token = tokens[i];
-        NSString *argument = [arguments count] > i ? arguments[i] : skip;
+        NSInteger index = [tokens count] - (i + 1);
+        ALOToken *token = [tokens objectAtIndex:index];
+        NSString *argument = [arguments count] > index ? [arguments objectAtIndex:index] : skip;
         
         if (![argument isEqualToString:skip]) {
             NSString *string = [argument containsString:@" "] ? [NSString stringWithFormat:@"\"%@\"", argument] : argument;
