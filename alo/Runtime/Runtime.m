@@ -151,6 +151,7 @@
     }
     
     NSError *error = nil;
+    NSDate *start = [NSDate date];
     NSArray<NSString *> *instructions = [ALOLexer compile:[script run] env:[[self config] env] arguments:arguments error:&error];
     
     if (error) {
@@ -165,13 +166,15 @@
         NSInteger status = system([[NSString stringWithFormat:@"sh -c '%@'", instruction] UTF8String]);
         
         if (status != 0) {
-            [Console error:[NSString stringWithFormat:@"Exit code: %i", (int) status]];
+            [Console error:[NSString stringWithFormat:@"Exit code: %li", status]];
             
             return (int) status;
         }
     }
     
-    [Console done:@""];
+    NSNumber *elapsed = [NSNumber numberWithDouble:[start timeIntervalSinceNow] * -1];
+    
+    [Console done:[NSString stringWithFormat:@"%.3fs", [elapsed doubleValue]]];
     
     return 0;
 }
