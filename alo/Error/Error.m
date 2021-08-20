@@ -19,7 +19,7 @@
         NSLocalizedDescriptionKey: reason,
     };
     
-    return [NSError errorWithDomain:[self domain] code:code userInfo:userInfo];
+    return [NSError errorWithDomain:[NSError domain] code:code userInfo:userInfo];
 }
 
 @end

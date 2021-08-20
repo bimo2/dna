@@ -6,6 +6,7 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "../Error/Error.h"
 #import "Lexer.h"
 
 @implementation ALOToken
@@ -49,8 +50,10 @@ static NSString *valuePattern = @"(?<= -> )(.*?)(?=#)";
 @implementation ALOLexer
 
 static NSString *tokenPattern = @"#(?<=#)((\\w+[\?!]?)|(\\w+ -> ([^\\s#]+|\"[^#]+\")))(?=#)#";
+static NSString *whitespacePattern = @"\\s\\s+(?=(?:[^\"]*(\")[^\"]*\\1)*[^\"]*$)";
+static NSString *skip = @"-";
 
-+ (NSArray<NSString *> *)compile:(NSArray<NSString *> *)lines env:(ALOEnv *)env arguments:(NSArray<NSString *> *)arguments {
++ (NSArray<NSString *> *)compile:(NSArray<NSString *> *)lines env:(ALOEnv *)env arguments:(NSArray<NSString *> *)arguments error:(NSError **)error {
     NSMutableArray<NSString *> *instructions = [NSMutableArray arrayWithArray:lines];
     
     for (NSString *key in env) {
@@ -58,8 +61,50 @@ static NSString *tokenPattern = @"#(?<=#)((\\w+[\?!]?)|(\\w+ -> ([^\\s#]+|\"[^#]
         NSString *value = env[key];
         
         for (NSInteger i = 0; i < [instructions count]; i++) {
-            [instructions replaceObjectAtIndex:i withObject:[instructions[i] stringByReplacingOccurrencesOfString:replace withString:value]];
+            NSString *update = [instructions[i] stringByReplacingOccurrencesOfString:replace withString:value];
+            
+            [instructions replaceObjectAtIndex:i withObject:update];
         }
+    }
+    
+    NSArray<ALOToken *> *tokens = [ALOLexer tokenize:instructions];
+    
+    for (NSInteger i = 0; i < [tokens count]; i++) {
+        ALOToken *token = tokens[i];
+        NSString *argument = [arguments count] > i ? arguments[i] : skip;
+        
+        if (![argument isEqualToString:skip]) {
+            NSString *string = [argument containsString:@" "] ? [NSString stringWithFormat:@"\"%@\"", argument] : argument;
+            NSString *update = [instructions[[token line]] stringByReplacingCharactersInRange:[token range] withString:string];
+            
+            [instructions replaceObjectAtIndex:[token line] withObject:update];
+            
+            continue;
+        }
+        
+        if ([token required]) {
+            *error = [NSError error:ALORuntimeError because:[NSString stringWithFormat:@"Expected token: %@!", [token name]]];
+            
+            return nil;
+        }
+        
+        if ([token defaultValue]) {
+            NSString *update = [instructions[[token line]] stringByReplacingCharactersInRange:[token range] withString:[token defaultValue]];
+            
+            [instructions replaceObjectAtIndex:[token line] withObject:update];
+            
+            continue;
+        }
+        
+        NSString *update = [instructions[[token line]] stringByReplacingCharactersInRange:[token range] withString:@""];
+        
+        [instructions replaceObjectAtIndex:[token line] withObject:update];
+    }
+    
+    NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:whitespacePattern options:NSRegularExpressionCaseInsensitive error:nil];
+    
+    for (NSMutableString *instruction in instructions) {
+        [regex replaceMatchesInString:instruction options:0 range:NSMakeRange(0, [instruction length]) withTemplate:@" "];
     }
     
     return [NSArray arrayWithArray:instructions];

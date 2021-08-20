@@ -150,10 +150,17 @@
         return ALORuntimeError;
     }
     
-    NSArray<NSString *> *instructions = [ALOLexer compile:[script run] env:[[self config] env] arguments:arguments];
+    NSError *error = nil;
+    NSArray<NSString *> *instructions = [ALOLexer compile:[script run] env:[[self config] env] arguments:arguments error:&error];
     
-    for (NSString *line in instructions) {
-        NSLog(@"%@\n", line);
+    if (error) {
+        [Console error:[error localizedDescription]];
+        
+        return (int) [error code];
+    }
+    
+    for (NSString *instruction in instructions) {
+        NSLog(@"%@\n", instruction);
     }
     
     return 0;

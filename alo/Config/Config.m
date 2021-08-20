@@ -57,7 +57,7 @@ static NSString *gitFile = @".git";
         }
         
         for (NSString *item in directory) {
-            if ([item isEqualToString:[self fileName]]) {
+            if ([item isEqualToString:[ALOConfig fileName]]) {
                 NSString *absolutePath = [path stringByAppendingPathComponent:item];
                 
                 file = [NSString stringWithContentsOfFile:absolutePath encoding:NSUTF8StringEncoding error:&fsError];
@@ -77,7 +77,7 @@ static NSString *gitFile = @".git";
         path = [path stringByDeletingLastPathComponent];
     }
     
-    return file ? [self parse:file atPath:lastPath error:error] : nil;
+    return file ? [ALOConfig parse:file atPath:lastPath error:error] : nil;
 }
 
 + (ALOConfig *)parse:(NSString *)json atPath:(NSString *)path error:(NSError **)error {
@@ -95,15 +95,15 @@ static NSString *gitFile = @".git";
     
     config.path = [NSString stringWithString:path];
     config.version = [object[@"_alo"] integerValue];
-    config.dependencies = [self parseDependenciesFromData:object[@"dependencies"] error:error];
+    config.dependencies = [ALOConfig parseDependenciesFromData:object[@"dependencies"] error:error];
     
     if (*error) return nil;
     
-    config.env = [self parseEnvFromData:object[@"env"] error:error];
+    config.env = [ALOConfig parseEnvFromData:object[@"env"] error:error];
     
     if (*error) return nil;
     
-    config.scripts = [self parseScriptsFromData:object[@"scripts"] error:error];
+    config.scripts = [ALOConfig parseScriptsFromData:object[@"scripts"] error:error];
     
     if (*error) return nil;
     

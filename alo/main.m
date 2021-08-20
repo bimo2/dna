@@ -17,9 +17,9 @@ int main(int argc, const char *argv[]) {
         ALOConfig *alo = [ALOConfig find:&error];
         
         if (error) {
-            [Console error:error.localizedDescription];
+            [Console error:[error localizedDescription]];
             
-            return (int) error.code;
+            return (int) [error code];
         }
         
         ALORuntime *app = [[ALORuntime alloc] initWithVersion:[ALOResources latestVersion] andConfig:alo];
@@ -39,7 +39,7 @@ int main(int argc, const char *argv[]) {
         } else {
             NSMutableArray *arguments = [NSMutableArray array];
             
-            for (int i = 1; i < argc; i++) {
+            for (int i = 2; i < argc; i++) {
                 [arguments addObject:[NSString stringWithCString:argv[i] encoding:NSUTF8StringEncoding]];
             }
             

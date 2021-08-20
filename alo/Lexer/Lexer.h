@@ -24,7 +24,7 @@
 
 @interface ALOLexer : NSObject
 
-+ (NSArray<NSString *> *)compile:(NSArray<NSString *> *)lines env:(ALOEnv *)env arguments:(NSArray<NSString *> *)arguments;
++ (NSArray<NSString *> *)compile:(NSArray<NSString *> *)lines env:(ALOEnv *)env arguments:(NSArray<NSString *> *)arguments error:(NSError **)error;
 
 + (NSArray<ALOToken *> *)tokenize:(NSArray<NSString *> *)lines;
 
