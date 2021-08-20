@@ -89,7 +89,7 @@
         if ([target isAbsolutePath]) {
             status = ![[NSFileManager defaultManager] fileExistsAtPath:target];
         } else {
-            status = system([[NSString stringWithFormat:@"sh -c \"which -s %@\"", target] UTF8String]);
+            status = system([[NSString stringWithFormat:@"sh -c 'which -s %@'", target] UTF8String]);
         }
         
         if (status == 0) {
@@ -160,8 +160,18 @@
     }
     
     for (NSString *instruction in instructions) {
-        NSLog(@"%@\n", instruction);
+        [Console message:instruction withContext:key];
+        
+        NSInteger status = system([[NSString stringWithFormat:@"sh -c '%@'", instruction] UTF8String]);
+        
+        if (status != 0) {
+            [Console error:[NSString stringWithFormat:@"Exit code: %i", (int) status]];
+            
+            return (int) status;
+        }
     }
+    
+    [Console done:@""];
     
     return 0;
 }

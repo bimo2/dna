@@ -11,7 +11,7 @@
 @implementation Console 
 
 + (void)message:(NSString *)log withContext:(NSString *)context {
-    printf("\033[1;94m%s\033[0;94m %s\033[0m\n", [[context ?: @"ALO" uppercaseString] UTF8String], [log UTF8String]);
+    printf("\033[1;94m%s\033[0;94m %s\033[0m\n", [context ?: @"ALO" UTF8String], [log UTF8String]);
 }
 
 + (void)done:(NSString *)log {
