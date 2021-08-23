@@ -12,6 +12,8 @@
 #import "../Lexer/Lexer.h"
 #import "Runtime.h"
 
+#define GITHUB_DIRECTORY "github.com"
+
 @implementation ALORuntime
 
 - (instancetype)initWithVersion:(NSString *)version andConfig:(ALOConfig *)config {
@@ -25,7 +27,12 @@
 
 - (int)manual {
     if ([self config]) {
-        [Console message:[NSString stringWithFormat:@"Ready! (scope: %@)\n", [[self config] path]] withContext:nil];
+        if ([[self config] project]) {
+            [Console message:[NSString stringWithFormat:@"Ready! (scope: " TEXT_BOLD "%@" TEXT_RESET TEXT_BLUE ")\n", [[self config] project]] withContext:nil];
+        } else {
+            [Console message:[NSString stringWithFormat:@"Ready! (scope: %@)\n", [[self config] path]] withContext:nil];
+        }
+
         [Console print:@"+ " TEXT_BOLD "deps, ..." TEXT_RESET];
         [Console print:@"  Resolve software dependencies\n"];
         [Console print:@"+ " TEXT_BOLD "list, ls" TEXT_RESET];
@@ -51,10 +58,18 @@
     
     NSFileManager *manager = [NSFileManager defaultManager];
     NSString *path = [[manager currentDirectoryPath] stringByAppendingPathComponent:[ALOConfig fileName]];
+    NSArray<NSString *> *components = [[path stringByDeletingLastPathComponent] componentsSeparatedByString:@"/"];
+    NSInteger githubDirectory = [components indexOfObject:@GITHUB_DIRECTORY];
+    NSString *project = @"null";
     NSError *error;
     
     [manager createFileAtPath:path contents:nil attributes:nil];
-    [[ALOResources example] writeToFile:path atomically:YES encoding:NSUTF8StringEncoding error:&error];
+    
+    if (githubDirectory != NSNotFound && [components count] > ++githubDirectory + 1) {
+        project = [NSString stringWithFormat:@"\"%@/%@\"", components[githubDirectory], components[++githubDirectory]];
+    }
+    
+    [[ALOResources jsonWithProject:project] writeToFile:path atomically:YES encoding:NSUTF8StringEncoding error:&error];
     
     if (error) {
         [Console error:[NSString stringWithFormat:@"Could not create file: %@", path]];

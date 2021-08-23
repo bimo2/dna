@@ -12,7 +12,8 @@
 
 @property (class, nonatomic, readonly) NSString *latestVersion;
 @property (class, nonatomic, readonly) NSString *docs;
-@property (class, nonatomic, readonly) NSString *example;
+
++ (NSString *)jsonWithProject:(NSString *)project;
 
 @end
 

@@ -9,6 +9,8 @@
 #import "../Error/Error.h"
 #import "Config.h"
 
+#define GIT_FILE ".git"
+
 @implementation ALOScript
 
 - (instancetype)initWithInfo:(NSString *)info andRun:(NSArray<NSString *> *)run {
@@ -28,8 +30,6 @@
 @end
 
 @implementation ALOConfig
-
-static NSString *gitFile = @".git";
 
 + (NSString *)fileName {
     return @"alo.json";
@@ -71,7 +71,7 @@ static NSString *gitFile = @".git";
                 break;
             }
             
-            if ([item isEqualToString: gitFile]) isGitPath = YES;
+            if ([item isEqualToString: @GIT_FILE]) isGitPath = YES;
         }
         
         path = [path stringByDeletingLastPathComponent];
@@ -95,6 +95,15 @@ static NSString *gitFile = @".git";
     
     config.path = [NSString stringWithString:path];
     config.version = [object[@"_alo"] integerValue];
+    
+    id project = object[@"project"];
+    
+    if (!project || [project isKindOfClass:[NSNull class]]) {
+        config.project = nil;
+    } else {
+        config.project = project;
+    }
+    
     config.dependencies = [ALOConfig parseDependenciesFromData:object[@"dependencies"] error:error];
     
     if (*error) return nil;

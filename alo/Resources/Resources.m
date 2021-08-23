@@ -25,9 +25,10 @@
     return @ALO_URL;
 }
 
-+ (NSString *)example {
-    return @"{\n"
++ (NSString *)jsonWithProject:(NSString *)project {
+    NSString *template = @"{\n"
     "  \"_alo\": 0,\n"
+    "  \"project\": %s,\n"
     "  \"dependencies\": {\n"
     "    \"ALO\": \"" ALO_PATH "\",\n"
     "    \"Safari\": [\"" SAFARI_PATH "\", \"" SAFARI_URL "\"],\n"
@@ -66,6 +67,8 @@
     "    }\n"
     "  }\n"
     "}\n";
+    
+    return [NSString stringWithFormat:template, [project ?: @"null" cStringUsingEncoding:NSUTF8StringEncoding]];
 }
 
 @end
