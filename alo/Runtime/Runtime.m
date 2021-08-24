@@ -32,7 +32,7 @@
         } else {
             [Console message:[NSString stringWithFormat:@"Ready! (scope: %@)\n", [[self config] path]] withContext:nil];
         }
-
+        
         [Console print:@"+ " TEXT_BOLD "deps, ..." TEXT_RESET];
         [Console print:@"  Resolve software dependencies\n"];
         [Console print:@"+ " TEXT_BOLD "list, ls" TEXT_RESET];
@@ -51,7 +51,7 @@
 
 - (int)create {
     if ([self config]) {
-        [Console warning:[NSString stringWithFormat:@"`%@` already in scope: %@", [ALOConfig fileName], [[self config] path]]];
+        [Console warning:[NSString stringWithFormat:@"`%@` already in scope: %@", [ALOConfig fileName], [[self config] project] ?: [[self config] path]]];
         
         return 0;
     }
@@ -65,8 +65,16 @@
     
     [manager createFileAtPath:path contents:nil attributes:nil];
     
-    if (githubDirectory != NSNotFound && [components count] > ++githubDirectory + 1) {
-        project = [NSString stringWithFormat:@"\"%@/%@\"", components[githubDirectory], components[++githubDirectory]];
+    if (githubDirectory != NSNotFound && [components count] > githubDirectory + 2) {
+        project = [NSString stringWithFormat:@"\"%@/%@\"", components[++githubDirectory], components[++githubDirectory]];
+    } else {
+        [Console message:@"Enter project name:" withContext:nil];
+        
+        NSFileHandle *handle = [NSFileHandle fileHandleWithStandardInput];
+        NSString *input = [[NSString alloc] initWithData:[handle availableData] encoding:NSUTF8StringEncoding];
+        NSString *draft = [input stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+        
+        if (![draft isEqualToString:[NSString string]]) project = [NSString stringWithFormat:@"\"%@\"", draft];
     }
     
     [[ALOResources jsonWithProject:project] writeToFile:path atomically:YES encoding:NSUTF8StringEncoding error:&error];

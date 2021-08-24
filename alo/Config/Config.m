@@ -100,8 +100,12 @@
     
     if (!project || [project isKindOfClass:[NSNull class]]) {
         config.project = nil;
-    } else {
+    } else if ([project isKindOfClass:[NSString class]]) {
         config.project = project;
+    } else {
+        *error = [NSError error:ALOParseError because:@"Invalid `project` field"];
+        
+        return nil;
     }
     
     config.dependencies = [ALOConfig parseDependenciesFromData:object[@"dependencies"] error:error];
