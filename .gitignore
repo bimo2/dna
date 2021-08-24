@@ -1,5 +1,8 @@
 .DS_Store
 **/alo.json
 
+# Objective-C
+build/
+
 # Xcode
 xcuserdata/
