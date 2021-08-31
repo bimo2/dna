@@ -1,8 +1,13 @@
-.DS_Store
 **/alo.json
+
+# MacOS
+*.DS_Store
 
 # Objective-C
 build/
 
 # Xcode
 xcuserdata/
+*.hmap
+*.dSYM
+*.dSYM.zip
