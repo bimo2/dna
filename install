@@ -1,0 +1,91 @@
+#!/bin/sh
+
+GITHUB_ASSET_NAME=alo
+GITHUB_URL=https://api.github.com/repos/bimo2/alo
+STEP=0
+
+start () {
+  echo "\\033[1m\\033[94m$1\\033[0m\n"
+}
+
+next () {
+  STEP=$((STEP + 1))
+
+  sleep 0.5
+
+  tput sc
+  echo "\\033[1m- $1\\033[0m"
+}
+
+success () {
+  tput rc
+  tput ed || tput cd
+  echo "\\033[1m\xE2\x9C\x93 $1\\033[0m"
+}
+
+error () {
+  tput rc
+  tput ed || tput cd
+  echo "\\033[1m\\033[91m\xE2\x9C\x97 $1\n\nFAILED!\\033[0m"
+
+  exit $STEP
+}
+
+end () {
+  echo "\n\\033[1m\\033[92m$1\\033[0m"
+
+  exit 0
+}
+
+tput cl
+start "ALO installer running..."
+next "Resolving latest release..."
+
+JSON=$(curl -H "Accept: application/vnd.github.v3+json" $GITHUB_URL/releases/latest)
+VERSION=$(echo $JSON | jq -r ".tag_name")
+ASSET_URL=$(echo $JSON | jq -r ".assets[] | select(.name|test(\"^[$GITHUB_ASSET_NAME].\")) | .url")
+
+if [ ! -z $VERSION ] && [ ! -z $ASSET_URL ]; then
+  success "Resolved release $VERSION"
+else
+  error "Failed to resolve latest release"
+fi
+
+next "Downloading assets..."
+
+DOWNLOAD_PATH=/usr/local/var/alo
+DOWNLOAD_FILE=$DOWNLOAD_PATH/$(basename $ASSET_URL)
+
+mkdir -p $DOWNLOAD_PATH
+curl -H "Accept:application/octet-stream" $ASSET_URL -o $DOWNLOAD_FILE
+
+if [ $? -eq 0 ]; then
+  success "Downloaded asset $(basename $ASSET_URL)"
+else
+  error "Failed to download $ASSET_URL"
+fi
+
+next "Copying binaries..."
+
+INSTALL_PATH=/usr/local/bin
+
+cp $DOWNLOAD_FILE $INSTALL_PATH/alo && chmod u+x $INSTALL_PATH/alo
+
+if [ $? -eq 0 ]; then
+  success "Copied $(basename $DOWNLOAD_FILE) to alo"
+else
+  error "Failed to copy $(basename $DOWNLOAD_FILE) to alo"
+fi
+
+next "Linking binaries..."
+
+rm -rf $INSTALL_PATH/_
+ln -s $INSTALL_PATH/alo $INSTALL_PATH/_
+
+if [ $? -eq 0 ]; then
+  success "Linked alo to _"
+else
+  error "Failed to link alo to _"
+fi
+
+end "ALO installed successfully!"
