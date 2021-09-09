@@ -24,8 +24,6 @@ success () {
 }
 
 error () {
-  tput rc
-  tput ed || tput cd
   echo "\\033[1m\\033[91m\xE2\x9C\x97 $1\n\nFAILED!\\033[0m"
 
   exit $STEP
@@ -41,9 +39,9 @@ tput cl
 start "ALO installer running..."
 next "Resolving latest release..."
 
-JSON=$(curl -H "Accept: application/vnd.github.v3+json" $GITHUB_URL/releases/latest)
-VERSION=$(echo $JSON | jq -r ".tag_name")
-ASSET_URL=$(echo $JSON | jq -r ".assets[] | select(.name|test(\"^[$GITHUB_ASSET_NAME].\")) | .url")
+JSON=$(curl -L -H "Accept: application/vnd.github.v3+json" $GITHUB_URL/releases/latest)
+VERSION=$(echo $JSON | tr '\r\n' ' ' | jq -r ".tag_name")
+ASSET_URL=$(echo $JSON | tr '\r\n' ' ' | jq -r ".assets[] | select(.name|test(\"^[$GITHUB_ASSET_NAME].\")) | .url")
 
 if [ ! -z $VERSION ] && [ ! -z $ASSET_URL ]; then
   success "Resolved release $VERSION"
@@ -57,7 +55,7 @@ DOWNLOAD_PATH=/usr/local/var/alo
 DOWNLOAD_FILE=$DOWNLOAD_PATH/$(basename $ASSET_URL)
 
 mkdir -p $DOWNLOAD_PATH
-curl -H "Accept:application/octet-stream" $ASSET_URL -o $DOWNLOAD_FILE
+curl -L -H "Accept: application/octet-stream" $ASSET_URL -o $DOWNLOAD_FILE
 
 if [ $? -eq 0 ]; then
   success "Downloaded asset $(basename $ASSET_URL)"
@@ -69,6 +67,7 @@ next "Copying binaries..."
 
 INSTALL_PATH=/usr/local/bin
 
+rm -rf $INSTALL_PATH/alo
 cp $DOWNLOAD_FILE $INSTALL_PATH/alo && chmod u+x $INSTALL_PATH/alo
 
 if [ $? -eq 0 ]; then
