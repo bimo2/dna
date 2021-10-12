@@ -1,6 +1,6 @@
 //
 //  Error.h
-//  alo
+//  DNA
 //
 //  Created by Bimal Bhagrath on 2021-08-13.
 //
@@ -8,16 +8,17 @@
 #ifndef ERROR_H
 #define ERROR_H
 
-enum {
-    ALOReadError = 100,
-    ALOWriteError,
-    ALOParseError,
-    ALORuntimeError,
+enum
+{
+    DNAReadError = 100,
+    DNAWriteError,
+    DNAParseError,
+    DNARuntimeError,
 };
 
-@interface NSError (ALOError)
+@interface NSError (DNAError)
 
-@property (class, readonly) NSString *domain;
+@property(class, readonly) NSString *domain;
 
 + (NSError *)error:(NSInteger)code because:(NSString *)reason;
 

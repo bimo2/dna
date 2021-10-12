@@ -1,6 +1,6 @@
 //
 //  main.m
-//  alo
+//  DNA
 //
 //  Created by Bimal Bhagrath on 2021-08-10.
 //
@@ -14,7 +14,7 @@
 int main(int argc, const char *argv[]) {
     @autoreleasepool {
         NSError *error;
-        ALOConfig *alo = [ALOConfig find:&error];
+        Config *dna = [Config find:&error];
         
         if (error) {
             [Console error:[error localizedDescription]];
@@ -22,7 +22,7 @@ int main(int argc, const char *argv[]) {
             return (int) [error code];
         }
         
-        ALORuntime *app = [[ALORuntime alloc] initWithVersion:[ALOResources latestVersion] andConfig:alo];
+        Runtime *app = [[Runtime alloc] initWithVersion:[Resources latestVersion] andConfig:dna];
         
         if (argc < 2) return [app manual];
         

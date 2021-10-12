@@ -1,6 +1,6 @@
 //
 //  Runtime.m
-//  alo
+//  DNA
 //
 //  Created by Bimal Bhagrath on 2021-08-14.
 //
@@ -14,9 +14,9 @@
 
 #define GITHUB_DIRECTORY "github.com"
 
-@implementation ALORuntime
+@implementation Runtime
 
-- (instancetype)initWithVersion:(NSString *)version andConfig:(ALOConfig *)config {
+- (instancetype)initWithVersion:(NSString *)version andConfig:(Config *)config {
     if (self = [super init]) {
         _semver = version;
         _config = config;
@@ -40,7 +40,7 @@
     } else {
         [Console message:@"Not ready...\n" withContext:nil];
         [Console print:@"+ " TEXT_BOLD "init, i" TEXT_RESET];
-        [Console print:@"  Create `alo.json` template\n"];
+        [Console print:@"  Create `dna.json` template\n"];
     }
     
     [Console print:@"+ " TEXT_BOLD "version, v" TEXT_RESET];
@@ -51,13 +51,13 @@
 
 - (int)create {
     if ([self config]) {
-        [Console warning:[NSString stringWithFormat:@"`%@` already in scope: %@", [ALOConfig fileName], [[self config] project] ?: [[self config] path]]];
+        [Console warning:[NSString stringWithFormat:@"`%@` already in scope: %@", [Config fileName], [[self config] project] ?: [[self config] path]]];
         
         return 0;
     }
     
     NSFileManager *manager = [NSFileManager defaultManager];
-    NSString *path = [[manager currentDirectoryPath] stringByAppendingPathComponent:[ALOConfig fileName]];
+    NSString *path = [[manager currentDirectoryPath] stringByAppendingPathComponent:[Config fileName]];
     NSArray<NSString *> *components = [[path stringByDeletingLastPathComponent] componentsSeparatedByString:@"/"];
     NSInteger githubDirectory = [components indexOfObject:@GITHUB_DIRECTORY];
     NSString *project = @"null";
@@ -77,27 +77,27 @@
         if (![draft isEqualToString:[NSString string]]) project = [NSString stringWithFormat:@"\"%@\"", draft];
     }
     
-    [[ALOResources jsonWithProject:project] writeToFile:path atomically:YES encoding:NSUTF8StringEncoding error:&error];
+    [[Resources jsonWithProject:project] writeToFile:path atomically:YES encoding:NSUTF8StringEncoding error:&error];
     
     if (error) {
         [Console error:[NSString stringWithFormat:@"Could not create file: %@", path]];
         
-        return ALOWriteError;
+        return DNAWriteError;
     }
     
-    [Console done:[NSString stringWithFormat:@"Created new `%@` file!", [ALOConfig fileName]]];
+    [Console done:[NSString stringWithFormat:@"Created new `%@` file!", [Config fileName]]];
     
     return 0;
 }
 
 - (int)resolve {
     if (![self config]) {
-        [Console warning:[NSString stringWithFormat:@"`%@` not in scope", [ALOConfig fileName]]];
+        [Console warning:[NSString stringWithFormat:@"`%@` not in scope", [Config fileName]]];
         
         return 0;
     }
     
-    ALODependencies *dependencies = [[self config] dependencies];
+    Dependencies *dependencies = [[self config] dependencies];
     
     if (![dependencies count]) {
         [Console print:@TEXT_BOLD "\u2713 No dependencies"];
@@ -129,12 +129,12 @@
 
 - (int)list {
     if (![self config]) {
-        [Console warning:[NSString stringWithFormat:@"`%@` not in scope", [ALOConfig fileName]]];
+        [Console warning:[NSString stringWithFormat:@"`%@` not in scope", [Config fileName]]];
         
         return 0;
     }
     
-    ALOScripts *scripts = [[self config] scripts];
+    Scripts *scripts = [[self config] scripts];
     NSString *suffix = [scripts count] == 1 ? @"" : @"s";
     
     [Console message:[NSString stringWithFormat:@"%lu script%@", [scripts count], suffix] withContext:nil];
@@ -143,11 +143,11 @@
         NSArray<NSString *> *keys = [[scripts allKeys] sortedArrayUsingSelector:@selector(compare:)];
         
         for (NSString *key in keys) {
-            ALOScript *script = scripts[key];
-            NSArray<ALOToken *> *tokens = [ALOLexer tokenize:[script run]];
+            Script *script = scripts[key];
+            NSArray<Token *> *tokens = [Lexer tokenize:[script run]];
             NSMutableArray<NSString *> *signature = [NSMutableArray array];
             
-            for (ALOToken *token in tokens) {
+            for (Token *token in tokens) {
                 NSString *format = [token required] ? @"%@!" : @"%@?";
                 
                 [signature addObject:[NSString stringWithFormat:format, [token name]]];
@@ -165,17 +165,17 @@
 }
 
 - (int)execute:(NSString *)key arguments:(NSArray<NSString *> *)arguments {
-    ALOScript *script = [[self config] scripts][key];
+    Script *script = [[self config] scripts][key];
     
     if (!script) {
         [Console error:[NSString stringWithFormat:@"`%@` not defined", key]];
         
-        return ALORuntimeError;
+        return DNARuntimeError;
     }
     
     NSError *error = nil;
     NSDate *start = [NSDate date];
-    NSArray<NSString *> *instructions = [ALOLexer compile:[script run] env:[[self config] env] arguments:arguments error:&error];
+    NSArray<NSString *> *instructions = [Lexer compile:[script run] env:[[self config] env] arguments:arguments error:&error];
     
     if (error) {
         [Console error:[error localizedDescription]];

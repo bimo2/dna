@@ -29,7 +29,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		F67C12D826C36BF6000E3142 /* alo */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = alo; sourceTree = BUILT_PRODUCTS_DIR; };
+		F67C12D826C36BF6000E3142 /* DNA */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = DNA; sourceTree = BUILT_PRODUCTS_DIR; };
 		F67C12DB26C36BF6000E3142 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		F6E907CC26C38DA9009D231E /* Config.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Config.m; sourceTree = "<group>"; };
 		F6E907CE26C38DBC009D231E /* Config.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Config.h; sourceTree = "<group>"; };
@@ -59,7 +59,7 @@
 		F67C12CF26C36BF6000E3142 = {
 			isa = PBXGroup;
 			children = (
-				F67C12DA26C36BF6000E3142 /* alo */,
+				F67C12DA26C36BF6000E3142 /* DNA */,
 				F67C12D926C36BF6000E3142 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -67,12 +67,12 @@
 		F67C12D926C36BF6000E3142 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				F67C12D826C36BF6000E3142 /* alo */,
+				F67C12D826C36BF6000E3142 /* DNA */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		F67C12DA26C36BF6000E3142 /* alo */ = {
+		F67C12DA26C36BF6000E3142 /* DNA */ = {
 			isa = PBXGroup;
 			children = (
 				F6E907DB26C977B4009D231E /* Resources */,
@@ -83,7 +83,7 @@
 				F6E907D326C71AC8009D231E /* Runtime */,
 				F67C12DB26C36BF6000E3142 /* main.m */,
 			);
-			path = alo;
+			path = DNA;
 			sourceTree = "<group>";
 		};
 		F6E907C826C38B7E009D231E /* Config */ = {
@@ -143,9 +143,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		F67C12D726C36BF6000E3142 /* alo */ = {
+		F67C12D726C36BF6000E3142 /* DNA */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = F67C12DF26C36BF6000E3142 /* Build configuration list for PBXNativeTarget "alo" */;
+			buildConfigurationList = F67C12DF26C36BF6000E3142 /* Build configuration list for PBXNativeTarget "DNA" */;
 			buildPhases = (
 				F67C12D426C36BF6000E3142 /* Sources */,
 				F67C12D526C36BF6000E3142 /* Frameworks */,
@@ -155,9 +155,9 @@
 			);
 			dependencies = (
 			);
-			name = alo;
-			productName = alo;
-			productReference = F67C12D826C36BF6000E3142 /* alo */;
+			name = DNA;
+			productName = DNA;
+			productReference = F67C12D826C36BF6000E3142 /* DNA */;
 			productType = "com.apple.product-type.tool";
 		};
 /* End PBXNativeTarget section */
@@ -166,14 +166,14 @@
 		F67C12D026C36BF6000E3142 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 1250;
+				LastUpgradeCheck = 1300;
 				TargetAttributes = {
 					F67C12D726C36BF6000E3142 = {
 						CreatedOnToolsVersion = 12.5.1;
 					};
 				};
 			};
-			buildConfigurationList = F67C12D326C36BF6000E3142 /* Build configuration list for PBXProject "alo" */;
+			buildConfigurationList = F67C12D326C36BF6000E3142 /* Build configuration list for PBXProject "DNA" */;
 			compatibilityVersion = "Xcode 9.3";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -186,7 +186,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				F67C12D726C36BF6000E3142 /* alo */,
+				F67C12D726C36BF6000E3142 /* DNA */,
 			);
 		};
 /* End PBXProject section */
@@ -260,7 +260,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 11.3;
+				MACOSX_DEPLOYMENT_TARGET = 11.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -313,7 +313,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 11.3;
+				MACOSX_DEPLOYMENT_TARGET = 11.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = macosx;
@@ -323,6 +323,7 @@
 		F67C12E026C36BF6000E3142 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
 				MACOSX_DEPLOYMENT_TARGET = 11.0;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -332,6 +333,7 @@
 		F67C12E126C36BF6000E3142 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
 				MACOSX_DEPLOYMENT_TARGET = 11.0;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -341,7 +343,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		F67C12D326C36BF6000E3142 /* Build configuration list for PBXProject "alo" */ = {
+		F67C12D326C36BF6000E3142 /* Build configuration list for PBXProject "DNA" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				F67C12DD26C36BF6000E3142 /* Debug */,
@@ -350,7 +352,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		F67C12DF26C36BF6000E3142 /* Build configuration list for PBXNativeTarget "alo" */ = {
+		F67C12DF26C36BF6000E3142 /* Build configuration list for PBXNativeTarget "DNA" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				F67C12E026C36BF6000E3142 /* Debug */,

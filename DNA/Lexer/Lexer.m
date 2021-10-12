@@ -1,6 +1,6 @@
 //
 //  Lexer.m
-//  alo
+//  DNA
 //
 //  Created by Bimal Bhagrath on 2021-08-17.
 //
@@ -9,7 +9,7 @@
 #import "../Error/Error.h"
 #import "Lexer.h"
 
-@implementation ALOToken
+@implementation Token
 
 static NSString *keywordPattern = @"\\w+[\?|!]?";
 static NSString *valuePattern = @"(?<= -> )(.*?)(?=#)";
@@ -47,13 +47,13 @@ static NSString *valuePattern = @"(?<= -> )(.*?)(?=#)";
 
 @end
 
-@implementation ALOLexer
+@implementation Lexer
 
 static NSString *tokenPattern = @"#(?<=#)((\\w+[\?!]?)|(\\w+ -> ([^\\s#]+|\"[^#]+\")))(?=#)#";
 static NSString *whitespacePattern = @"\\s\\s+(?=(?:[^\"]*(\")[^\"]*\\1)*[^\"]*$)";
 static NSString *skip = @"-";
 
-+ (NSArray<NSString *> *)compile:(NSArray<NSString *> *)lines env:(ALOEnv *)env arguments:(NSArray<NSString *> *)arguments error:(NSError **)error {
++ (NSArray<NSString *> *)compile:(NSArray<NSString *> *)lines env:(Env *)env arguments:(NSArray<NSString *> *)arguments error:(NSError **)error {
     NSMutableArray<NSString *> *instructions = [NSMutableArray arrayWithArray:lines];
     
     for (NSString *key in env) {
@@ -67,11 +67,11 @@ static NSString *skip = @"-";
         }
     }
     
-    NSArray<ALOToken *> *tokens = [ALOLexer tokenize:instructions];
+    NSArray<Token *> *tokens = [Lexer tokenize:instructions];
     
     for (NSInteger i = 0; i < [tokens count]; i++) {
         NSInteger index = [tokens count] - (i + 1);
-        ALOToken *token = [tokens objectAtIndex:index];
+        Token *token = [tokens objectAtIndex:index];
         NSString *argument = [arguments count] > index ? [arguments objectAtIndex:index] : skip;
         
         if (![argument isEqualToString:skip]) {
@@ -84,7 +84,7 @@ static NSString *skip = @"-";
         }
         
         if ([token required]) {
-            *error = [NSError error:ALORuntimeError because:[NSString stringWithFormat:@"Expected token: %@!", [token name]]];
+            *error = [NSError error:DNARuntimeError because:[NSString stringWithFormat:@"Expected token: %@", [token name]]];
             
             return nil;
         }
@@ -111,8 +111,8 @@ static NSString *skip = @"-";
     return [NSArray arrayWithArray:instructions];
 }
 
-+ (NSArray<ALOToken *> *)tokenize:(NSArray<NSString *> *)lines {
-    NSMutableArray<ALOToken *> *tokens = [NSMutableArray array];
++ (NSArray<Token *> *)tokenize:(NSArray<NSString *> *)lines {
+    NSMutableArray<Token *> *tokens = [NSMutableArray array];
     NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:tokenPattern options:NSRegularExpressionCaseInsensitive error:nil];
     
     for (NSInteger i = 0; i < [lines count]; i++) {
@@ -120,7 +120,7 @@ static NSString *skip = @"-";
         NSArray<NSTextCheckingResult *> *matches = [regex matchesInString:line options:0 range:NSMakeRange(0, [line length])];
         
         for (NSTextCheckingResult *match in matches) {
-            ALOToken *token = [[ALOToken alloc] initWithTextMatch:match andLine:line number:i];
+            Token *token = [[Token alloc] initWithTextMatch:match andLine:line number:i];
             
             [tokens addObject:token];
         }

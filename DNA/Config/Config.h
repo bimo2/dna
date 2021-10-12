@@ -1,6 +1,6 @@
 //
 //  Config.h
-//  alo
+//  DNA
 //
 //  Created by Bimal Bhagrath on 2021-08-11.
 //
@@ -8,10 +8,10 @@
 #ifndef CONFIG_H
 #define CONFIG_H
 
-typedef NSDictionary<NSString *, NSArray<NSString *> *> ALODependencies;
-typedef NSDictionary<NSString *, NSString *> ALOEnv;
+typedef NSDictionary<NSString *, NSArray<NSString *> *> Dependencies;
+typedef NSDictionary<NSString *, NSString *> Env;
 
-@interface ALOScript : NSObject
+@interface Script : NSObject
 
 @property (nonatomic) NSString *info;
 @property (nonatomic) NSArray<NSString *> *run;
@@ -20,19 +20,19 @@ typedef NSDictionary<NSString *, NSString *> ALOEnv;
 
 @end
 
-typedef NSDictionary<NSString *, ALOScript *> ALOScripts;
+typedef NSDictionary<NSString *, Script *> Scripts;
 
-@interface ALOConfig : NSObject
+@interface Config : NSObject
 
 @property (class, nonatomic, readonly) NSString *fileName;
 @property (nonatomic) NSString *path;
 @property (nonatomic) NSInteger version;
 @property (nonatomic) NSString *project;
-@property (nonatomic) ALODependencies *dependencies;
-@property (nonatomic) ALOEnv *env;
-@property (nonatomic) ALOScripts *scripts;
+@property (nonatomic) Dependencies *dependencies;
+@property (nonatomic) Env *env;
+@property (nonatomic) Scripts *scripts;
 
-+ (ALOConfig *)find:(NSError **)error;
++ (Config *)find:(NSError **)error;
 
 @end
 

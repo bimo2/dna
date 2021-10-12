@@ -1,6 +1,6 @@
 //
 //  Lexer.h
-//  alo
+//  DNA
 //
 //  Created by Bimal Bhagrath on 2021-08-17.
 //
@@ -10,7 +10,7 @@
 
 #import "../Config/Config.h"
 
-@interface ALOToken : NSObject
+@interface Token : NSObject
 
 @property (nonatomic) NSString *name;
 @property (nonatomic) BOOL required;
@@ -22,11 +22,11 @@
 
 @end
 
-@interface ALOLexer : NSObject
+@interface Lexer : NSObject
 
-+ (NSArray<NSString *> *)compile:(NSArray<NSString *> *)lines env:(ALOEnv *)env arguments:(NSArray<NSString *> *)arguments error:(NSError **)error;
++ (NSArray<NSString *> *)compile:(NSArray<NSString *> *)lines env:(Env *)env arguments:(NSArray<NSString *> *)arguments error:(NSError **)error;
 
-+ (NSArray<ALOToken *> *)tokenize:(NSArray<NSString *> *)lines;
++ (NSArray<Token *> *)tokenize:(NSArray<NSString *> *)lines;
 
 @end
 

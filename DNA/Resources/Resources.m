@@ -1,6 +1,6 @@
 //
 //  Resources.m
-//  alo
+//  DNA
 //
 //  Created by Bimal Bhagrath on 2021-08-15.
 //
@@ -8,29 +8,29 @@
 #import <Foundation/Foundation.h>
 #import "Resources.h"
 
-#define ALO_PATH "/usr/local/bin/alo"
-#define ALO_URL "https://github.com/bimo2/alo"
+#define DNA_PATH "/usr/local/bin/_"
+#define DNA_URL "https://github.com/bimo2/dna"
 #define SAFARI_PATH "/Applications/Safari.app"
 #define SAFARI_URL "https://apple.com/safari"
 #define XCODE_BINARY "xcodebuild"
 #define XCODE_URL "https://developer.apple.com/xcode"
 
-@implementation ALOResources
+@implementation Resources
 
 + (NSString *)latestVersion {
     return @"0.1.0";
 }
 
 + (NSString *)docs {
-    return @ALO_URL;
+    return @DNA_URL;
 }
 
 + (NSString *)jsonWithProject:(NSString *)project {
     NSString *template = @"{\n"
-    "  \"_alo\": 0,\n"
+    "  \"_dna\": 0,\n"
     "  \"project\": %s,\n"
     "  \"dependencies\": {\n"
-    "    \"ALO\": \"" ALO_PATH "\",\n"
+    "    \"DNA\": \"" DNA_PATH "\",\n"
     "    \"Safari\": [\"" SAFARI_PATH "\", \"" SAFARI_URL "\"],\n"
     "    \"Xcode\": [\"" XCODE_BINARY "\", \"" XCODE_URL "\"]\n"
     "  },\n"
@@ -40,30 +40,30 @@
     "  },\n"
     "  \"scripts\": {\n"
     "    \"docs\": {\n"
-    "      \"?\": \"Open ALO docs\",\n"
-    "      \"run\": \"open -a Safari " ALO_URL "\"\n"
+    "      \"?\": \"Open DNA docs\",\n"
+    "      \"run\": \"open -a Safari " DNA_URL "\"\n"
     "    },\n"
     "    \"install\": {\n"
     "      \"?\": \"Install...\",\n"
     "      \"run\": [\n"
-    "        \"echo -e download dependencies\",\n"
-    "        \"echo -e install #path -> /usr/local/bin#\"\n"
+    "        \"echo download dependencies\",\n"
+    "        \"echo install #path -> /usr/local/bin#\"\n"
     "      ]\n"
     "    },\n"
     "    \"build\": {\n"
     "      \"?\": \"Build...\",\n"
     "      \"run\": [\n"
-    "        \"echo -e compile --&TARGET\",\n"
-    "        \"echo -e package #binary!#\"\n"
+    "        \"echo compile --&TARGET\",\n"
+    "        \"echo package #binary!#\"\n"
     "      ]\n"
     "    },\n"
     "    \"start\": {\n"
     "      \"?\": \"Start...\",\n"
-    "      \"run\": \"echo -e start server :&PORT\"\n"
+    "      \"run\": \"echo start server :&PORT\"\n"
     "    },\n"
     "    \"test\": {\n"
     "      \"?\": \"Test...\",\n"
-    "      \"run\": \"echo -e unit-test #file?#\"\n"
+    "      \"run\": \"echo unit-test #file?#\"\n"
     "    }\n"
     "  }\n"
     "}\n";

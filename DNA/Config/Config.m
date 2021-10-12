@@ -1,6 +1,6 @@
 //
 //  Config.m
-//  alo
+//  DNA
 //
 //  Created by Bimal Bhagrath on 2021-08-11.
 //
@@ -11,7 +11,7 @@
 
 #define GIT_FILE ".git"
 
-@implementation ALOScript
+@implementation Script
 
 - (instancetype)initWithInfo:(NSString *)info andRun:(NSArray<NSString *> *)run {
     if (self = [super init]) {
@@ -29,13 +29,13 @@
 
 @end
 
-@implementation ALOConfig
+@implementation Config
 
 + (NSString *)fileName {
-    return @"alo.json";
+    return @"dna.json";
 }
 
-+ (ALOConfig *)find:(NSError **)error {
++ (Config *)find:(NSError **)error {
     NSFileManager *manager = [NSFileManager defaultManager];
     NSString *path = [manager currentDirectoryPath];
     NSString *lastPath = @"";
@@ -51,19 +51,19 @@
         NSArray *directory = [manager contentsOfDirectoryAtPath:path error:&fsError];
         
         if (fsError) {
-            *error = [NSError error:ALOReadError because:[NSString stringWithFormat:@"Could not read directory: %@", path]];
+            *error = [NSError error:DNAReadError because:[NSString stringWithFormat:@"Could not read directory: %@", path]];
             
             return nil;
         }
         
         for (NSString *item in directory) {
-            if ([item isEqualToString:[ALOConfig fileName]]) {
+            if ([item isEqualToString:[Config fileName]]) {
                 NSString *absolutePath = [path stringByAppendingPathComponent:item];
                 
                 file = [NSString stringWithContentsOfFile:absolutePath encoding:NSUTF8StringEncoding error:&fsError];
                 
                 if (fsError) {
-                    *error = [NSError error:ALOReadError because:[NSString stringWithFormat:@"Could not read file: %@", [path stringByAppendingPathComponent:item]]];
+                    *error = [NSError error:DNAReadError because:[NSString stringWithFormat:@"Could not read file: %@", [path stringByAppendingPathComponent:item]]];
                     
                     return nil;
                 }
@@ -77,24 +77,24 @@
         path = [path stringByDeletingLastPathComponent];
     }
     
-    return file ? [ALOConfig parse:file atPath:lastPath error:error] : nil;
+    return file ? [Config parse:file atPath:lastPath error:error] : nil;
 }
 
-+ (ALOConfig *)parse:(NSString *)json atPath:(NSString *)path error:(NSError **)error {
++ (Config *)parse:(NSString *)json atPath:(NSString *)path error:(NSError **)error {
     NSError *jsonError = nil;
     id data = [NSJSONSerialization JSONObjectWithData:[json dataUsingEncoding:NSUTF8StringEncoding] options:NSJSONReadingMutableContainers error:&jsonError];
     
     if (jsonError || ![data isKindOfClass:[NSDictionary class]]) {
-        *error = [NSError error:ALOParseError because:@"Invalid JSON {} syntax"];
+        *error = [NSError error:DNAParseError because:@"Invalid JSON {} syntax"];
         
         return nil;
     }
     
     NSDictionary *object = data;
-    ALOConfig *config = [[ALOConfig alloc] init];
+    Config *config = [[Config alloc] init];
     
     config.path = [NSString stringWithString:path];
-    config.version = [object[@"_alo"] integerValue];
+    config.version = [object[@"_dna"] integerValue];
     
     id project = object[@"project"];
     
@@ -103,31 +103,31 @@
     } else if ([project isKindOfClass:[NSString class]]) {
         config.project = project;
     } else {
-        *error = [NSError error:ALOParseError because:@"Invalid `project` field"];
+        *error = [NSError error:DNAParseError because:@"Invalid `project` field"];
         
         return nil;
     }
     
-    config.dependencies = [ALOConfig parseDependenciesFromData:object[@"dependencies"] error:error];
+    config.dependencies = [Config parseDependenciesFromData:object[@"dependencies"] error:error];
     
     if (*error) return nil;
     
-    config.env = [ALOConfig parseEnvFromData:object[@"env"] error:error];
+    config.env = [Config parseEnvFromData:object[@"env"] error:error];
     
     if (*error) return nil;
     
-    config.scripts = [ALOConfig parseScriptsFromData:object[@"scripts"] error:error];
+    config.scripts = [Config parseScriptsFromData:object[@"scripts"] error:error];
     
     if (*error) return nil;
     
     return config;
 }
 
-+ (ALODependencies *)parseDependenciesFromData:(id)data error:(NSError **)error {
-    if (!data) return [ALODependencies dictionary];
++ (Dependencies *)parseDependenciesFromData:(id)data error:(NSError **)error {
+    if (!data) return [Dependencies dictionary];
     
     if (![data isKindOfClass:[NSDictionary class]]) {
-        *error = [NSError error:ALOParseError because:@"Invalid `dependencies` object"];
+        *error = [NSError error:DNAParseError because:@"Invalid `dependencies` object"];
         
         return nil;
     }
@@ -135,7 +135,7 @@
     NSMutableDictionary *dependencies = [NSMutableDictionary dictionaryWithDictionary:data];
     
     NSError *(^keyedError)(NSString *) = ^NSError *(NSString *key) {
-        return [NSError error:ALOParseError because:[NSString stringWithFormat:@"Invalid `dependencies` object: %@", key]];
+        return [NSError error:DNAParseError because:[NSString stringWithFormat:@"Invalid `dependencies` object: %@", key]];
     };
     
     for (NSString *key in [dependencies allKeys]) {
@@ -172,23 +172,23 @@
         return nil;
     }
     
-    return [ALODependencies dictionaryWithDictionary:dependencies];
+    return [Dependencies dictionaryWithDictionary:dependencies];
 }
 
-+ (ALOEnv *)parseEnvFromData:(id)data error:(NSError **)error {
-    if (!data) return [ALOEnv dictionary];
++ (Env *)parseEnvFromData:(id)data error:(NSError **)error {
+    if (!data) return [Env dictionary];
     
     if (![data isKindOfClass:[NSDictionary class]]) {
-        *error = [NSError error:ALOParseError because:@"Invalid `env` object"];
+        *error = [NSError error:DNAParseError because:@"Invalid `env` object"];
         
         return nil;
     }
     
-    ALOEnv *env = data;
+    Env *env = data;
     
     for (NSString *key in [env allKeys]) {
         if (![env[key] isKindOfClass:[NSString class]]) {
-            *error = [NSError error:ALOParseError because:[NSString stringWithFormat:@"Invalid `env` object: %@", key]];
+            *error = [NSError error:DNAParseError because:[NSString stringWithFormat:@"Invalid `env` object: %@", key]];
             
             return nil;
         }
@@ -197,11 +197,11 @@
     return env;
 }
 
-+ (ALOScripts *)parseScriptsFromData:(id)data error:(NSError **)error {
-    if (!data) return [ALOScripts dictionary];
++ (Scripts *)parseScriptsFromData:(id)data error:(NSError **)error {
+    if (!data) return [Scripts dictionary];
     
     if (![data isKindOfClass:[NSMutableDictionary class]]) {
-        *error = [NSError error:ALOParseError because:@"Invalid `scripts` object"];
+        *error = [NSError error:DNAParseError because:@"Invalid `scripts` object"];
         
         return nil;
     }
@@ -209,7 +209,7 @@
     NSMutableDictionary *scripts = data;
     
     NSError *(^keyedError)(NSString *) = ^NSError *(NSString *key) {
-        return [NSError error:ALOParseError because:[NSString stringWithFormat:@"Invalid `scripts` object: %@", key]];
+        return [NSError error:DNAParseError because:[NSString stringWithFormat:@"Invalid `scripts` object: %@", key]];
     };
     
     for (NSString *key in [scripts allKeys]) {
@@ -226,7 +226,7 @@
         }
         
         if ([scripts[key][@"run"] isKindOfClass:[NSString class]]) {
-            ALOScript *script = [[ALOScript alloc] initWithInfo:scripts[key][@"?"] andRun:@[[NSString stringWithString:scripts[key][@"run"]]]];
+            Script *script = [[Script alloc] initWithInfo:scripts[key][@"?"] andRun:@[[NSString stringWithString:scripts[key][@"run"]]]];
             
             [scripts setObject:script forKey:key];
             
@@ -244,7 +244,7 @@
                 }
             }
             
-            ALOScript *script = [[ALOScript alloc] initWithInfo:scripts[key][@"?"] andRun:commands];
+            Script *script = [[Script alloc] initWithInfo:scripts[key][@"?"] andRun:commands];
             
             [scripts setObject:script forKey:key];
             

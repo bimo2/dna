@@ -1,6 +1,6 @@
 //
 //  Error.m
-//  alo
+//  DNA
 //
 //  Created by Bimal Bhagrath on 2021-08-13.
 //
@@ -8,10 +8,10 @@
 #import <Foundation/Foundation.h>
 #import "Error.h"
 
-@implementation NSError (ALOError)
+@implementation NSError (DNAError)
 
 + (NSString *)domain {
-    return @"com.balance.alo";
+    return @"com.bimo2.dna";
 }
 
 + (NSError *)error:(NSInteger)code because:(NSString *)reason {

@@ -1,6 +1,6 @@
 //
 //  Runtime.h
-//  alo
+//  DNA
 //
 //  Created by Bimal Bhagrath on 2021-08-14.
 //
@@ -10,12 +10,12 @@
 
 #import "../Config/Config.h"
 
-@interface ALORuntime : NSObject
+@interface Runtime : NSObject
 
 @property (nonatomic) NSString *semver;
-@property (nonatomic) ALOConfig *config;
+@property (nonatomic) Config *config;
 
-- (instancetype)initWithVersion:(NSString *)version andConfig:(ALOConfig *)config;
+- (instancetype)initWithVersion:(NSString *)version andConfig:(Config *)config;
 
 - (int)manual;
 
