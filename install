@@ -54,8 +54,8 @@ next "Downloading assets..."
 DOWNLOAD_PATH=/usr/local/var/dna
 DOWNLOAD_FILE=$DOWNLOAD_PATH/$(basename $ASSET_URL)
 
-mkdir -p $DOWNLOAD_PATH
-curl -L -H "Accept: application/octet-stream" $ASSET_URL -o $DOWNLOAD_FILE
+sudo mkdir -p $DOWNLOAD_PATH
+sudo curl -L -H "Accept: application/octet-stream" $ASSET_URL -o $DOWNLOAD_FILE
 
 if [ $? -eq 0 ]; then
   success "Downloaded asset $(basename $ASSET_URL)"
@@ -67,8 +67,8 @@ next "Copying binaries..."
 
 INSTALL_PATH=/usr/local/bin
 
-rm -rf $INSTALL_PATH/_
-cp $DOWNLOAD_FILE $INSTALL_PATH/_ && chmod u+x $INSTALL_PATH/_
+sudo rm -rf $INSTALL_PATH/_
+sudo cp $DOWNLOAD_FILE $INSTALL_PATH/_ && sudo chmod a+x $INSTALL_PATH/_
 
 if [ $? -eq 0 ]; then
   success "Copied $(basename $DOWNLOAD_FILE) to _"

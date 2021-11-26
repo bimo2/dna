@@ -203,10 +203,10 @@
 }
 
 - (int)version {
-#if __LP64__
-    NSString *arch = @"64-bit";
-#else
-    NSString *arch = @"32-bit";
+#if TARGET_CPU_ARM64
+    NSString *arch = @"Apple";
+#elif TARGET_CPU_X86_64
+    NSString *arch = @"Intel";
 #endif
     
     [Console message:[NSString stringWithFormat:@"version %@ (%@)", [self semver], arch] withContext:nil];
