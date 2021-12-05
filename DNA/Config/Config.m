@@ -150,7 +150,7 @@
         if ([dependencies[key] isKindOfClass:[NSMutableArray class]]) {
             NSMutableArray *array = dependencies[key];
             
-            if ([array count] == 0 || [array count] > 2) {
+            if ([array count] == 0) {
                 *error = keyedError(key);
                 
                 return nil;

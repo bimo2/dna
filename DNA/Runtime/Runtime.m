@@ -106,21 +106,24 @@
     }
     
     for (NSString *key in dependencies) {
-        NSString *target = [dependencies[key] firstObject];
-        NSInteger status;
+        NSMutableArray<NSString *> *unresolved = [NSMutableArray array];
         
-        if ([target isAbsolutePath]) {
-            status = ![[NSFileManager defaultManager] fileExistsAtPath:target];
-        } else {
-            status = system([[NSString stringWithFormat:@"sh -c 'which -s %@'", target] UTF8String]);
+        for (NSString *target in dependencies[key]) {
+            NSInteger status;
+            
+            if ([target isAbsolutePath]) {
+                status = ![[NSFileManager defaultManager] fileExistsAtPath:target];
+            } else {
+                status = system([[NSString stringWithFormat:@"sh -c 'which -s %@'", target] UTF8String]);
+            }
+            
+            if (status != 0) [unresolved addObject:target];
         }
         
-        if (status == 0) {
-            [Console print:[NSString stringWithFormat:@TEXT_BOLD TEXT_GREEN "\u2713 %@" TEXT_RESET, key]];
-        } else if ([dependencies[key] count] > 1) {
-            [Console print:[NSString stringWithFormat:@TEXT_BOLD TEXT_RED "\u2717 %@" TEXT_RESET TEXT_RED ": %@" TEXT_RESET, key, [dependencies[key] objectAtIndex:1]]];
+        if ([unresolved count] != 0) {
+            [Console print:[NSString stringWithFormat:@TEXT_BOLD TEXT_RED "\u2717 %@" TEXT_RESET TEXT_RED ": %@" TEXT_RESET, key, [unresolved componentsJoinedByString:@", "]]];
         } else {
-            [Console print:[NSString stringWithFormat:@TEXT_BOLD TEXT_RED "\u2717 %@" TEXT_RESET, key]];
+            [Console print:[NSString stringWithFormat:@TEXT_BOLD TEXT_GREEN "\u2713 %@" TEXT_RESET, key]];
         }
     }
     

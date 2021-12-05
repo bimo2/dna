@@ -8,12 +8,10 @@
 #import <Foundation/Foundation.h>
 #import "Resources.h"
 
-#define DNA_PATH "/usr/local/bin/_"
+#define DNA_BINARY "_"
 #define DNA_URL "https://github.com/bimo2/dna"
 #define SAFARI_PATH "/Applications/Safari.app"
-#define SAFARI_URL "https://apple.com/safari"
 #define XCODE_BINARY "xcodebuild"
-#define XCODE_URL "https://developer.apple.com/xcode"
 
 @implementation Resources
 
@@ -30,9 +28,9 @@
     "  \"_dna\": 0,\n"
     "  \"project\": %s,\n"
     "  \"dependencies\": {\n"
-    "    \"DNA\": \"" DNA_PATH "\",\n"
-    "    \"Safari\": [\"" SAFARI_PATH "\", \"" SAFARI_URL "\"],\n"
-    "    \"Xcode\": [\"" XCODE_BINARY "\", \"" XCODE_URL "\"]\n"
+    "    \"DNA\": \"" DNA_BINARY "\",\n"
+    "    \"Safari\": \"" SAFARI_PATH "\",\n"
+    "    \"Xcode\": \"" XCODE_BINARY "\"\n"
     "  },\n"
     "  \"env\": {\n"
     "    \"TARGET\": \"debug\",\n"

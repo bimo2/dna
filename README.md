@@ -54,15 +54,15 @@ You can configure DNA by creating a `dna.json` file in project's root directory.
 }
 ```
 
-| Field           | Default    | Description                                                                                                                                                                                                                                   |
-| --------------- | ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `_dna`          | `0`        | JSON spec (`dna` major version) used to parse the file                                                                                                                                                                                        |
-| `project`       | `$(SCOPE)` | Project and scope name                                                                                                                                                                                                                        |
-| `dependencies`  | `{}`       | [Dependency queries](#dependencies) required by the project &mdash; Queries can be commands (ex. `xcodebuild`) or absolute paths (ex. `/usr/local/lib/foundation.a`). Use a `[query, url]` array to include a link describing the dependency. |
-| `env`           | `{}`       | Environment variables that can be used in [JSON DSL](#json-dsl)                                                                                                                                                                               |
-| `scripts`       | `{}`       | Object containing project scripts                                                                                                                                                                                                             |
-| `scripts.*.?`   | `null`     | Description of the script for documentation                                                                                                                                                                                                   |
-| `scripts.*.run` | `null`     | [JSON DSL](#json-dsl) commands to run                                                                                                                                                                                                         |
+| Field           | Default    | Description                                                                                                                                                                                                               |
+| --------------- | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `_dna`          | `0`        | JSON spec (`dna` major version) used to parse the file                                                                                                                                                                    |
+| `project`       | `$(SCOPE)` | Project and scope name                                                                                                                                                                                                    |
+| `dependencies`  | `{}`       | [Dependency queries](#dependencies) required by the project &mdash; Queries can be commands (ex. `xcodebuild`) or absolute paths (ex. `/usr/local/lib/foundation.a`). Use an array to include multiple queries dependency |
+| `env`           | `{}`       | Environment variables that can be used in [JSON DSL](#json-dsl)                                                                                                                                                           |
+| `scripts`       | `{}`       | Object containing project scripts                                                                                                                                                                                         |
+| `scripts.*.?`   | `null`     | Description of the script for documentation                                                                                                                                                                               |
+| `scripts.*.run` | `null`     | [JSON DSL](#json-dsl) commands to run                                                                                                                                                                                     |
 
 Here's an example configuration file for a stock exchange project:
 
@@ -71,7 +71,7 @@ Here's an example configuration file for a stock exchange project:
   "_dna": 0,
   "project": "nasdaq/exchange",
   "dependencies": {
-    "NASDAQ SDK": ["nasdaq", "https://developer.nasdaq.io/sdk"]
+    "NASDAQ SDK": "nasdaq"
   },
   "env": {
     "NETWORK": "com.nasdaq.1"
@@ -107,7 +107,7 @@ Projects that require third party dependencies can use the `dependencies` object
 ```sh
 _ deps
 # ✓ NASDAQ SDK
-# ✗ NASDAQ SDK: https://developer.nasdaq.io/sdk
+# ✗ NASDAQ SDK: nasdaq
 ```
 
 ### JSON DSL
