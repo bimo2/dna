@@ -189,7 +189,7 @@
     for (NSString *instruction in instructions) {
         [Console message:instruction withContext:key];
         
-        NSInteger status = system([[NSString stringWithFormat:@"sh -c '%@'", instruction] UTF8String]);
+        NSInteger status = system([[NSString stringWithFormat:@"cd %@ && sh -c '%@'", [[self config] path], instruction] UTF8String]);
         
         if (status != 0) {
             [Console error:[NSString stringWithFormat:@"Exit code: %li", status]];

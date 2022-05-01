@@ -156,4 +156,4 @@ cp /Users/$(USER)/Library/Developer/Xcode/DerivedData/DNA-$(HASH)/Build/Products
 
 #
 
-<sub><sup>**MIT.** Copyright &copy; 2021 Bimal Bhagrath</sup></sub>
+<sub><sup>**MIT.** Copyright &copy; 2022 Bimal Bhagrath</sup></sub>
